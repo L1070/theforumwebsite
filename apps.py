@@ -1,4 +1,4 @@
-from bottle import route, run, template, request, response, post, get, delete, put
+from bottle import route, run, template, request, response, post, get, delete, put, static_file
 import os
 import sqlite3     
 
@@ -8,19 +8,19 @@ cur = db.cursor()
 abs_app_dir_path = os.path.dirname(os.path.realpath(__file__))
 abs_views_path = os.path.join(abs_app_dir_path, 'views')
 
+@route('/<filename>.css')
+def stylesheets(filename):
+    return static_file('{}.css'.format(filename), root='static')
+
 @route('/')
+@route('/threadlist')
+@route('/index')
 def index():
     return template('index.tpl')
 
 @route('/login')
 def login():
-    return '''
-        <form action="/login" method="post">
-            username: <input name="username" type="text" />
-            password: <input name="password" type="password" />
-            <input value="Login" type="submit" />
-        </form>
-           '''
+    return template('login.tpl')
 
 @route('/login', method='POST') 
 def do_login():
@@ -35,17 +35,7 @@ def do_login():
 
 @route('/signup')
 def signup():
-    return '''
-        <form action="/signup" method="post">
-            username: <input name="username" type="text" />
-            first name: <input name="first name" type="text" />
-            last name: <input name="last name" type="text" />
-            email address: <input name="email address" type="text" />
-            password: <input name="password" type="password" />
-            confirm password: <input name="confirm password" type="password" />
-            <input value="Signup" type="submit" />
-        </form>
-           '''
+    return template('signup.tpl')
 
 @route('/signup', method='POST') 
 def do_signup():
@@ -61,4 +51,4 @@ def do_signup():
     data_tuple = (username, password, first_name, last_name, email)
     cur.execute(statement, data_tuple)
 
-run(host='localhost', port=8080)
+run(host='localhost', port=8080, debug=True)
