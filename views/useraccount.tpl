@@ -14,9 +14,9 @@
 		</a>
 	</div> 
 	<div class="topnav">
-		<a href="/signup" class="active">Registration</a>
+		<a href="/signup">Registration</a>
 		<a href="/login">Login</a>
-		<a href="/useraccount">User Account</a>
+		<a href="/useraccount" class="active">User Account</a>
 		<a href="/saved">Saved Threads</a>
 		<a href="/">Thread List</a>
 	</div>
@@ -39,7 +39,7 @@
         <h1 class="h3 mb-3 font-weight-normal" style="color:rgb(132,61,168)">Signup</h1>
         <div>
             <label class="form-label" for="username" style="color:rgb(132,61,168)">Username</label>
-            <input name="username" type="text" id="username" class="form-control" required autofocus value = >
+            <input name="username" type="text" id="username" class="form-control" required autofocus>
         </div>
         <div>
             <label class="form-label" for="first-name" style="color:rgb(132,61,168)">First Name</label>

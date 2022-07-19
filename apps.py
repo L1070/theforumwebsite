@@ -23,6 +23,19 @@ def index():
         user = sessions[user_session_id]
         return template("index.tpl", user=user)
 
+@route('/threadlist/page/<pagenumber>')
+@view('/page/<pagenumber>')
+def index(pagenumber):
+    #statement = f"SELECT threadnumber, title, creator, datemade, score from threadlist LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR THREADLIST
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        return template("index.tpl", user="Guest")
+    else:
+        user = sessions[user_session_id]
+        return template("index.tpl", user=user)
+
 @route('/login')
 def login():
     user_session_id = request.get_cookie("user_session_id")
@@ -83,6 +96,9 @@ def do_signup():
     
 @route('/threadpage/<threadnumber>')
 def threadpage(threadnumber):
+    #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber'"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR COMMENT LIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
         return template("threadpage.tpl", user="Guest")
@@ -93,6 +109,9 @@ def threadpage(threadnumber):
     
 @route('/useraccount')
 def useraccount():
+    #statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address  from Users WHERE Username='username'"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR PREFILL USER ACCOUNT DETAILS
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
         return template("useraccount.tpl", user="Guest", Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
@@ -102,6 +121,9 @@ def useraccount():
         
 @route('/saved')
 def saved():
+    #statement = f"SELECT threadnumber, title, creator, datemade, score from savedthreads JOIN threadlist ON savedthreads.threadnumber=threadlist.threadnumber WHERE savedthreads.username = currentuser"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR THREADLIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
         return template("saved.tpl", user="Guest")
