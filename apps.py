@@ -16,6 +16,9 @@ abs_views_path = os.path.join(abs_app_dir_path, 'views')
 @route('/threadlist')
 @view('/')
 def index():
+    #statement = f"SELECT threadnumber, title, creator, datemade, score from threadlist LIMIT 20;"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR THREADLIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
         return template("index.tpl", user="Guest")
@@ -96,7 +99,20 @@ def do_signup():
     
 @route('/threadpage/<threadnumber>')
 def threadpage(threadnumber):
-    #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber'"
+    #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber' LIMIT 20"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR COMMENT LIST
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        return template("threadpage.tpl", user="Guest")
+    else:
+        user = sessions[user_session_id]
+        return template("threadpage.tpl", user=user)
+    return template('threadpage.tpl')
+    
+@route('/threadpage/<threadnumber>/page/<pagenumber>')
+def threadpage(threadnumber, pagenumber):
+    #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber' LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
     #cur.execute(statement)
     #DATABASE TO VARIABLES FOR COMMENT LIST
     user_session_id = request.get_cookie("user_session_id")
@@ -121,7 +137,19 @@ def useraccount():
         
 @route('/saved')
 def saved():
-    #statement = f"SELECT threadnumber, title, creator, datemade, score from savedthreads JOIN threadlist ON savedthreads.threadnumber=threadlist.threadnumber WHERE savedthreads.username = currentuser"
+    #statement = f"SELECT threadnumber, title, creator, datemade, score from savedthreads JOIN threadlist ON savedthreads.threadnumber=threadlist.threadnumber WHERE savedthreads.username = currentuser LIMIT 20"
+    #cur.execute(statement)
+    #DATABASE TO VARIABLES FOR THREADLIST
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        return template("saved.tpl", user="Guest")
+    else:
+        user = sessions[user_session_id]
+        return template("saved.tpl", user=user)
+        
+@route('/saved/<pagenumber>')
+def savedpage(pagenumber):
+    #statement = f"SELECT threadnumber, title, creator, datemade, score from savedthreads JOIN threadlist ON savedthreads.threadnumber=threadlist.threadnumber WHERE savedthreads.username = currentuser LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
     #cur.execute(statement)
     #DATABASE TO VARIABLES FOR THREADLIST
     user_session_id = request.get_cookie("user_session_id")
