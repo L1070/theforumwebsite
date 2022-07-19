@@ -16,6 +16,7 @@ abs_views_path = os.path.join(abs_app_dir_path, 'views')
 @route('/threadlist')
 @view('/')
 def index():
+    #statement = f"SELECT threadnumber, title, creator, datemade, score from pinnedlist JOIN threadlist ON pinnedlist.threadnumber=threadlist.threadnumber"
     #statement = f"SELECT threadnumber, title, creator, datemade, score from threadlist LIMIT 20;"
     #cur.execute(statement)
     #DATABASE TO VARIABLES FOR THREADLIST
@@ -99,6 +100,7 @@ def do_signup():
     
 @route('/threadpage/<threadnumber>')
 def threadpage(threadnumber):
+    #statement = f"SELECT commentnumber, datemade, content, score from pinnedcommentlist JOIN commentlist ON pinnedcommentlist.commentnumber=commentlist.commentnumber WHERE commentlist.thread='threadnumber'"
     #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber' LIMIT 20"
     #cur.execute(statement)
     #DATABASE TO VARIABLES FOR COMMENT LIST
