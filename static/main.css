@@ -1,0 +1,43 @@
+:root {
+	--main: #3C8A99;
+	--contrast: #843DA8;
+	--althighlight: #B8523D;
+	--highlight: #6CC540;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: var(--main);
+}
+
+.topnav a {
+  float: right;
+  text-align: center;
+  padding: 22px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: var(--highlight);
+  color: black;
+}
+
+.topnav a:link {
+  color: white;
+}
+
+.topnav a:visited {
+  color: white;
+}
+
+.topnav a.active {
+  background-color: var(--contrast);
+  color: white;
+}
+
+#logo {
+	position:fixed;
+	top: .25%;
+	left: .5%;
+}

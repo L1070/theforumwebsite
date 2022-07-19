@@ -1,5 +1,5 @@
 from bottle import route, run, template, request
-from bottle import response, post, get, delete, put, view, redirect, response
+from bottle import response, post, get, delete, put, view, redirect, response, static_file
 import uuid
 import os
 import sqlite3
@@ -13,6 +13,7 @@ abs_app_dir_path = os.path.dirname(os.path.realpath(__file__))
 abs_views_path = os.path.join(abs_app_dir_path, 'views')
 
 @route('/')
+@route('/threadlist')
 @view('/')
 def index():
     user_session_id = request.get_cookie("user_session_id")
@@ -24,7 +25,12 @@ def index():
 
 @route('/login')
 def login():
-    return template('Login.tpl', LogInFailed=False, Registration_Success=False)
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        user="Guest"
+    else:
+        user = sessions[user_session_id]
+    return template('Login.tpl', LogInFailed=False, Registration_Success=False, user=user)
 
 @route('/login', method='POST') 
 def do_login():
@@ -43,7 +49,12 @@ def do_login():
 
 @route('/signup')
 def signup():
-    return template('Signup.tpl', Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        user="Guest"
+    else:
+        user = sessions[user_session_id]
+    return template('Signup.tpl', Email_Taken=False, Username_Taken=False, Not_Same_Password=False, user=user)
 
 @route('/signup', method='POST') 
 def do_signup():
@@ -69,5 +80,37 @@ def do_signup():
     cur.execute(statement, data_tuple)
     db.commit()
     return template('login.tpl', Registration_Success=True, LogInFailed=False)
+    
+@route('/threadpage/<threadnumber>')
+def threadpage(threadnumber):
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        return template("threadpage.tpl", user="Guest")
+    else:
+        user = sessions[user_session_id]
+        return template("threadpage.tpl", user=user)
+    return template('threadpage.tpl')
+    
+@route('/useraccount')
+def useraccount():
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        return template("useraccount.tpl", user="Guest", Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+    else:
+        user = sessions[user_session_id]
+        return template("useraccount.tpl", user=user, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+        
+@route('/saved')
+def saved():
+    user_session_id = request.get_cookie("user_session_id")
+    if not user_session_id or user_session_id not in sessions:
+        return template("saved.tpl", user="Guest")
+    else:
+        user = sessions[user_session_id]
+        return template("saved.tpl", user=user)
+        
+@route('/static/<filename>')
+def server_static(filename):
+    return static_file(filename, root='./static')
 
-run(host='localhost', port=8080, reloader=True)
+run(host='localhost', port=8080, debug=True, reloader=True)
