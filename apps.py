@@ -1,7 +1,7 @@
 from bottle import route, run, template, request
 from bottle import response, post, get, delete, put, view, redirect, response, static_file
 import uuid
-import os
+import os, json
 import sqlite3
 
 sessions = {}
@@ -11,6 +11,22 @@ cur = db.cursor()
 
 abs_app_dir_path = os.path.dirname(os.path.realpath(__file__))
 abs_views_path = os.path.join(abs_app_dir_path, 'views')
+
+examplethreadlist=[
+    ["001","Example1","MakerExample1","Jan 4, 1991","1"],
+    ["002","Example2","MakerExample2","Jan 4, 2004","2"],
+    ["003","Example3","MakerExample3","Jan 4, 1987","4"],
+    ["004","Example4","MakerExample4","Jan 4, 1937","5"],
+    ["005","Example5","MakerExample5","Jan 4, 2041","3"],
+]
+
+examplecommentlist=[
+    ["001","Content1","MakerExample1","Jan 4, 1991","1"],
+    ["002","Content2","MakerExample2","Jan 4, 2004","2"],
+    ["003","Content3","MakerExample3","Jan 4, 1987","4"],
+    ["004","Content4","MakerExample4","Jan 4, 1937","5"],
+    ["005","Content5","MakerExample5","Jan 4, 2041","3"],
+]
 
 @route('/')
 @route('/threadlist')
@@ -22,23 +38,23 @@ def index():
     #DATABASE TO VARIABLES FOR THREADLIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
-        return template("index.tpl", user="Guest")
+        return template("index.tpl", user="Guest", examplethreadlist=examplethreadlist)
     else:
         user = sessions[user_session_id]
-        return template("index.tpl", user=user)
+        return template("index.tpl", user=user, examplethreadlist=examplethreadlist)
 
 @route('/threadlist/page/<pagenumber>')
-@view('/page/<pagenumber>')
-def index(pagenumber):
+@route('/page/<pagenumber>')
+def indexpage(pagenumber):
     #statement = f"SELECT threadnumber, title, creator, datemade, score from threadlist LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
     #cur.execute(statement)
     #DATABASE TO VARIABLES FOR THREADLIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
-        return template("index.tpl", user="Guest")
+        return template("index.tpl", user="Guest", examplethreadlist=examplethreadlist)
     else:
         user = sessions[user_session_id]
-        return template("index.tpl", user=user)
+        return template("index.tpl", user=user, examplethreadlist=examplethreadlist)
 
 @route('/login')
 def login():
@@ -106,11 +122,11 @@ def threadpage(threadnumber):
     #DATABASE TO VARIABLES FOR COMMENT LIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
-        return template("threadpage.tpl", user="Guest")
+        return template("threadpage.tpl", user="Guest", examplecommentlist=examplecommentlist)
     else:
         user = sessions[user_session_id]
-        return template("threadpage.tpl", user=user)
-    return template('threadpage.tpl')
+        return template("threadpage.tpl", user=user, examplecommentlist=examplecommentlist)
+    return template('threadpage.tpl', examplecommentlist=examplecommentlist)
     
 @route('/threadpage/<threadnumber>/page/<pagenumber>')
 def threadpage(threadnumber, pagenumber):
@@ -119,11 +135,11 @@ def threadpage(threadnumber, pagenumber):
     #DATABASE TO VARIABLES FOR COMMENT LIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
-        return template("threadpage.tpl", user="Guest")
+        return template("threadpage.tpl", user="Guest", examplecommentlist=examplecommentlist)
     else:
         user = sessions[user_session_id]
-        return template("threadpage.tpl", user=user)
-    return template('threadpage.tpl')
+        return template("threadpage.tpl", user=user, examplecommentlist=examplecommentlist)
+    return template('threadpage.tpl', examplecommentlist=examplecommentlist)
     
 @route('/useraccount')
 def useraccount():
@@ -136,6 +152,31 @@ def useraccount():
     else:
         user = sessions[user_session_id]
         return template("useraccount.tpl", user=user, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+
+@route('/useraccount', method='POST')
+def do_changeaccount():
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    confirm_password = request.forms.get('confirm-password')
+    first_name = request.forms.get('first-name')
+    last_name = request.forms.get('last-name')
+    email = request.forms.get('email-address')
+    if password != confirm_password:
+        return template('Signup.tpl', Username_Taken=False, Email_Taken=False, Not_Same_Password=True)
+    print(username)
+    statement = f"SELECT Username FROM Users WHERE Username = '{username}'"
+    cur.execute(statement)
+    if cur.fetchone() is not None:
+        return template('Signup.tpl', Username_Taken=True, Email_Taken=False, Not_Same_Password=False)
+    statement = f"SELECT Email_Address FROM Users WHERE Email_Address = '{email}'"
+    cur.execute(statement)
+    if cur.fetchone() is not None:
+        return template('Signup.tpl', Email_Taken=True, Username_Taken=False, Not_Same_Password=False)
+    statement = "INSERT INTO Users (Username, Password, First_Name, Last_Name, Email_Address, Registered_Date) VALUES (?,?,?,?,?, date('now'));"
+    data_tuple = (username, password, first_name, last_name, email)
+    cur.execute(statement, data_tuple)
+    db.commit()
+    return template('login.tpl', Registration_Success=True, LogInFailed=False)
         
 @route('/saved')
 def saved():
