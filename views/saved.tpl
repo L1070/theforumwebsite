@@ -22,6 +22,11 @@
 	</div>
 	<div style="margin-top:80px;">
 		<div>
+			<h1>
+				Thread List
+			</h1>
+		</div>
+		<div>
 			%if user == "Guest":
 				<p>Guest</p>
 			%else:
@@ -30,6 +35,38 @@
 				%else:
 					<p>{{user[0][0]}}</p>
 				%end
+			%end
+		</div>
+		<div>
+			%for entry in examplethreadlist:
+				<div class="threadbox">
+					<div class="row">
+						<div class="column left">
+							<h2>{{entry[0]}}</h2>
+						</div>
+						<div class="column middle">
+							<a href="/threadpage/{{entry[0]}}"><h1>{{entry[1]}}</h1></a>
+							<h3>{{entry[2]}} - {{entry[3]}}</h3>
+							
+						</div>
+						<div class="column right" style="margin-top:2%">
+							<button>UP</button>
+							<h5>{{entry[4]}}</h5>
+							<button>DOWN</button>
+						</div>
+					</div>
+					<div class="row" style="margin-top:3%;">
+						<div class="column littleleft">
+							<button>PIN</button>
+						</div>
+						<div class="column littlemiddle">
+							<button>SAVE</button>
+						</div>
+						<div class="column littleright">
+							<button>DELETE</button>
+						</div>
+					</div>
+				</div>
 			%end
 		</div>
 	</div>
