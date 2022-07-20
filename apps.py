@@ -185,10 +185,10 @@ def saved():
     #DATABASE TO VARIABLES FOR THREADLIST
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
-        return template("saved.tpl", user="Guest")
+        return template("saved.tpl", user="Guest", examplethreadlist=examplethreadlist)
     else:
         user = sessions[user_session_id]
-        return template("saved.tpl", user=user)
+        return template("saved.tpl", user=user, examplethreadlist=examplethreadlist)
         
 @route('/saved/<pagenumber>')
 def savedpage(pagenumber):

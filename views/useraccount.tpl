@@ -37,7 +37,7 @@
 
 		<div class="text-center mt-5">
 			<form action="/signup" method="post" style="max-width:300px;margin:auto;">
-				<h1 class="h3 mb-3 font-weight-normal" style="color:rgb(132,61,168)">Signup</h1>
+				<h1 class="h3 mb-3 font-weight-normal" style="color:rgb(132,61,168)">Change Details</h1>
 				<div>
 					<label class="form-label" for="username" style="color:rgb(132,61,168)">Username</label>
 					<input name="username" type="text" id="username" class="form-control" required autofocus>

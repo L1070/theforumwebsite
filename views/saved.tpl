@@ -23,7 +23,7 @@
 	<div style="margin-top:80px;">
 		<div>
 			<h1>
-				Thread List
+				Saved Thread List
 			</h1>
 		</div>
 		<div>
