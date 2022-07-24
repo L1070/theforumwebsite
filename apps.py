@@ -1,4 +1,4 @@
-from bottle import route, run, template, request
+from bottle import route, run, template, request, SimpleTemplate
 from bottle import response, post, get, delete, put, view, redirect, response, static_file
 import uuid
 import os
@@ -12,41 +12,44 @@ cur = db.cursor()
 abs_app_dir_path = os.path.dirname(os.path.realpath(__file__))
 abs_views_path = os.path.join(abs_app_dir_path, 'views')
 
-@route('/')
-@route('/threadlist')
-@view('/')
-def index():
-    #statement = f"SELECT threadnumber, title, creator, datemade, score from pinnedlist JOIN threadlist ON pinnedlist.threadnumber=threadlist.threadnumber"
-    #statement = f"SELECT threadnumber, title, creator, datemade, score from threadlist LIMIT 20;"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR THREADLIST
+
+def Cookie_Setting():
     user_session_id = request.get_cookie("user_session_id")
     if not user_session_id or user_session_id not in sessions:
-        return template("index.tpl", user="Guest")
+        return "Guest"
     else:
         user = sessions[user_session_id]
-        return template("index.tpl", user=user)
+        return user
+
+@route('/')
+#@route('/threadlist')
+@view('/')
+def index():
+    statement = "SELECT Thread_ID, Title_Name, Username, Body_Text, Date_Made, Score from Thread WHERE isPinned = 1;"
+    cur.execute(statement)
+    PinnedThreads = cur.fetchall()
+    statement = "SELECT Thread_ID, Title_Name, Username, Body_Text Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20;"
+    cur.execute(statement)
+    UnPinnedThreads = cur.fetchall()
+    #DATABASE TO VARIABLES FOR THREADLIST ----- Not displaying anything...
+    user = Cookie_Setting()
+    return template("index.tpl", user=user, PinnedThreads=PinnedThreads, UnPinnedThreads=UnPinnedThreads)
 
 @route('/threadlist/page/<pagenumber>')
 @view('/page/<pagenumber>')
 def index(pagenumber):
-    #statement = f"SELECT threadnumber, title, creator, datemade, score from threadlist LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR THREADLIST
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        return template("index.tpl", user="Guest")
-    else:
-        user = sessions[user_session_id]
-        return template("index.tpl", user=user)
+    pagenumber = int(pagenumber)
+    offset_num = (pagenumber + 1) * 20
+    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20 OFFSET {offset_num};"
+    cur.execute(statement)
+    UnPinnedThreads = cur.fetchall()
+    #DATABASE TO VARIABLES FOR THREADLIST ------ Done, but not testing for displaying yet
+    user = Cookie_Setting()
+    return template("index.tpl", user=user, UnPinnedThreads=UnPinnedThreads)
 
 @route('/login')
 def login():
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        user="Guest"
-    else:
-        user = sessions[user_session_id]
+    user = Cookie_Setting()
     return template('Login.tpl', LogInFailed=False, Registration_Success=False, user=user)
 
 @route('/login', method='POST') 
@@ -64,13 +67,16 @@ def do_login():
     response.set_cookie("user_session_id", user_session_id)
     return redirect('/')
 
+@route('/logout', method="GET")
+def do_logout():
+    user_session_id = request.get_cookie("user_session_id")
+    if user_session_id or user_session_id in sessions:
+        sessions.pop(user_session_id)
+    return redirect('/')
+
 @route('/signup')
 def signup():
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        user="Guest"
-    else:
-        user = sessions[user_session_id]
+    user = Cookie_Setting()
     return template('Signup.tpl', Email_Taken=False, Username_Taken=False, Not_Same_Password=False, user=user)
 
 @route('/signup', method='POST') 
@@ -100,66 +106,58 @@ def do_signup():
     
 @route('/threadpage/<threadnumber>')
 def threadpage(threadnumber):
-    #statement = f"SELECT commentnumber, datemade, content, score from pinnedcommentlist JOIN commentlist ON pinnedcommentlist.commentnumber=commentlist.commentnumber WHERE commentlist.thread='threadnumber'"
-    #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber' LIMIT 20"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR COMMENT LIST
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        return template("threadpage.tpl", user="Guest")
-    else:
-        user = sessions[user_session_id]
-        return template("threadpage.tpl", user=user)
-    return template('threadpage.tpl')
+    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 1;"
+    cur.execute(statement)
+    PinnedComments = cur.fetchall()
+    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 0;"
+    cur.execute(statement)
+    UnPinnedComments = cur.fetchall()
+    #DATABASE TO VARIABLES FOR COMMENT LIST -- done but not testing yet for displaying
+    user = Cookie_Setting()
+    return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments)
     
 @route('/threadpage/<threadnumber>/page/<pagenumber>')
 def threadpage(threadnumber, pagenumber):
-    #statement = f"SELECT commentnumber, datemade, content, score from commentlist WHERE thread='threadnumber' LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR COMMENT LIST
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        return template("threadpage.tpl", user="Guest")
-    else:
-        user = sessions[user_session_id]
-        return template("threadpage.tpl", user=user)
-    return template('threadpage.tpl')
+    pagenumber = int(pagenumber)
+    offset_num = (pagenumber + 1) * 20
+    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' LIMIT 20 OFFSET {offset_num};"
+    cur.execute(statement)
+    Comments = cur.fetchall()
+    #DATABASE TO VARIABLES FOR COMMENT LIST -- done but not testing yet for displaying
+    user = Cookie_Setting()
+    return template("threadpage.tpl", user=user, Comments=Comments)
     
 @route('/useraccount')
 def useraccount():
-    #statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address  from Users WHERE Username='username'"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR PREFILL USER ACCOUNT DETAILS
     user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        return template("useraccount.tpl", user="Guest", Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
-    else:
-        user = sessions[user_session_id]
-        return template("useraccount.tpl", user=user, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+    user = sessions[user_session_id]
+    username = user[0][0]
+    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
+    cur.execute(statement)
+    stored_info = cur.fetchall()
+    #DATABASE TO VARIABLES FOR PREFILL USER ACCOUNT DETAILS -- done but not testing yet for displaying
+    return template("useraccount.tpl", user=user, stored_info=stored_info)
         
 @route('/saved')
 def saved():
-    #statement = f"SELECT threadnumber, title, creator, datemade, score from savedthreads JOIN threadlist ON savedthreads.threadnumber=threadlist.threadnumber WHERE savedthreads.username = currentuser LIMIT 20"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR THREADLIST
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        return template("saved.tpl", user="Guest")
-    else:
-        user = sessions[user_session_id]
-        return template("saved.tpl", user=user)
+    user = Cookie_Setting()
+    username = user[0][0]
+    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text, Date_Made, Score from Thread WHERE isSaved = 1 AND Username = '{username}' LIMIT 20;"
+    cur.execute(statement)
+    Saved_Threads = cur.fetchall()
+    #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
+    return template("saved.tpl", user=user, Saved_Threads=Saved_Threads)
         
 @route('/saved/<pagenumber>')
 def savedpage(pagenumber):
-    #statement = f"SELECT threadnumber, title, creator, datemade, score from savedthreads JOIN threadlist ON savedthreads.threadnumber=threadlist.threadnumber WHERE savedthreads.username = currentuser LIMIT 20 OFFSET " + ((pagenumber+1)*20) + ";"
-    #cur.execute(statement)
-    #DATABASE TO VARIABLES FOR THREADLIST
-    user_session_id = request.get_cookie("user_session_id")
-    if not user_session_id or user_session_id not in sessions:
-        return template("saved.tpl", user="Guest")
-    else:
-        user = sessions[user_session_id]
-        return template("saved.tpl", user=user)
+    user = Cookie_Setting()
+    username = user[0][0]
+    pagenumber = int(pagenumber)
+    offset_num = (pagenumber + 1) * 20
+    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text, Date_Made, Score from Thread WHERE isSaved = 1 AND Username = '{username}' LIMIT 20 OFFSET {offset_num};"
+    cur.execute(statement)
+    #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
+    return template("saved.tpl", user=user)
         
 @route('/static/<filename>')
 def server_static(filename):

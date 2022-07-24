@@ -14,11 +14,15 @@
 		</a>
 	</div> 
 	<div class="topnav">
+		%if user == "Guest":
 		<a href="/signup">Registration</a>
 		<a href="/login">Login</a>
+	%elif user != "Guest":
 		<a href="/useraccount">User Account</a>
-		<a href="/saved" class="active">Saved Threads</a>
-		<a href="/">Thread List</a>
+		<a href="/saved">Saved Threads</a>
+		<a href="/logout">Sign Out</a>
+	%end
+		<a href="/" class="active">Thread List</a>
 	</div>
 	<div>
 	    %if user == "Guest":

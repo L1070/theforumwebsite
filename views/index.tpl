@@ -14,24 +14,21 @@
 		</a>
 	</div> 
 	<div class="topnav">
+	%if user == "Guest":
 		<a href="/signup">Registration</a>
 		<a href="/login">Login</a>
-	%if user != "Guest":
+	%elif user != "Guest":
 		<a href="/useraccount">User Account</a>
 		<a href="/saved">Saved Threads</a>
+		<a href="/logout">Sign Out</a>
 	%end
 		<a href="/" class="active">Thread List</a>
 	</div>
 	<div>
-	    %if user == "Guest":
-            <p>Guest</p>
-        %else:
-            %if user[0][5] == 1:
-                <p>Admin {{user[0][1]}}</p>
-            %else:
-                <p>{{user[0][0]}}</p>
-        %end
-    </div>
+		%for thread in PinnedThreads:
+			<p><span>{{thread[0]}}, {{thread[1]}}, {{thread[2]}}, {{thread[3]}}, {{thread[4]}}</span></p>
+			%end
+	</div>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
