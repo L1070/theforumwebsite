@@ -214,14 +214,23 @@ def do_newthread():
 
 @route('/newpost/<threadnumber>')
 def newpost(threadnumber):
-    user_session_id = request.get_cookie("user_session_id")
-    user = sessions[user_session_id]
+    user = Cookie_Setting()
+    return template('newpost.tpl', user=user, threadnumber=threadnumber)
+
+@route('/newpost/<threadnumber>', method='POST')
+def do_newpost(threadnumber):
+    user=Cookie_Setting()
+    content=request.forms.get('content')
+    userid = user[0][6]
     username = user[0][0]
-    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
-    cur.execute(statement)
-    stored_info = cur.fetchall()
-    return template('newpost.tpl', threadnumber=threadnumber, user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
-        
+    re.sub('[^0-9][0-9]{5}[^0-9]', '<a href="/threadpage/\1">\1</a>', content)
+    threadid = threadnumber
+    statement = f"INSERT INTO Comment (Thread_ID, User_ID, Username, Date_Created, Body_Text) VALUES (?, ?, ?, datetime('now'), ?);"
+    data_tuple = (threadid, userid, username, content)
+    cur.execute(statement, data_tuple)
+    db.commit()
+    return redirect('/')
+
 @route('/static/<filename>')
 def server_static(filename):
     return static_file(filename, root='./static')
