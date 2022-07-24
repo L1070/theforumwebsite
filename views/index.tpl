@@ -24,10 +24,7 @@
 	%end
 		<a href="/" class="active">Thread List</a>
 	</div>
-	<div>
-		%for thread in PinnedThreads:
-			<p><span>{{thread[0]}}, {{thread[1]}}, {{thread[2]}}, {{thread[3]}}, {{thread[4]}}</span></p>
-			%end
+
 	<div style="margin-top:80px;">
 		<div>
 			<h1>
@@ -46,7 +43,7 @@
 			%end
 		</div>
 		<div>
-			%for entry in examplethreadlist:
+			%for entry in PinnedThreads:
 				<div class="threadbox">
 					<div class="row">
 						<div class="column left">

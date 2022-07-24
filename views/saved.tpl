@@ -42,7 +42,7 @@
 			%end
 		</div>
 		<div>
-			%for entry in examplethreadlist:
+			%for entry in Saved_Threads:
 				<div class="threadbox">
 					<div class="row">
 						<div class="column left">
