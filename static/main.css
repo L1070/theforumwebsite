@@ -94,6 +94,11 @@
 }
 
 .littlemiddle {
+  margin-left: 1%;
+  width: 10%;
+}
+
+.littlemiddleadmin {
   width: 10%;
 }
 
