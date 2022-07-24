@@ -23,6 +23,9 @@
 		<a href="/saved">Saved Threads</a>
 	%end
 		<a href="/">Thread List</a>
+	%if user !="Guest":
+		<a href="/newpost/{{threadnumber}}">New Post</a>
+	%end
 	</div>
 	<div style="margin-top:80px;">
 		<div>
@@ -49,26 +52,38 @@
 							<h2>{{entry[0]}}</h2>
 						</div>
 						<div class="column middle">
-							<a href="/threadpage/{{entry[0]}}"><h1>{{entry[1]}}</h1></a>
 							<h3>{{entry[2]}} - {{entry[3]}}</h3>
-							
+							<p>{{entry[1]}}</p>
 						</div>
 						<div class="column right" style="margin-top:2%">
-							<button>UP</button>
-							<h5>{{entry[4]}}</h5>
-							<button>DOWN</button>
+							%if user != "Guest":
+								<button>UP</button>
+								<h5>{{entry[4]}}</h5>
+								<button>DOWN</button>
+							%else:
+								<a  href="/login"><button>UP</button></a>
+								<h5>{{entry[4]}}</h5>
+								<a  href="/login"><button>DOWN</button></a>
+							%end
 						</div>
 					</div>
 					<div class="row" style="margin-top:3%;">
-						<div class="column littleleft">
-							<button>PIN</button>
-						</div>
+					%if user != "Guest":
+						%if user[0][5] == 1:
+							<div class="column littleleft">
+								<button>PIN</button>
+							</div>
+						%end
+						%if user[0][0] == entry[2]:
+							<div class="column littlerightcomment">
+								<button>DELETE</button>
+							</div>
+						%end
+					%else:
 						<div class="column littlemiddle">
-							<button>SAVE</button>
+							<a  href="/login"><button>SAVE</button></a>
 						</div>
-						<div class="column littleright">
-							<button>DELETE</button>
-						</div>
+					%end
 					</div>
 				</div>
 			%end
@@ -81,26 +96,38 @@
 							<h2>{{entry[0]}}</h2>
 						</div>
 						<div class="column middle">
-							<a href="/threadpage/{{entry[0]}}"><h1>{{entry[1]}}</h1></a>
 							<h3>{{entry[2]}} - {{entry[3]}}</h3>
-							
+							<p>{{entry[1]}}</p>
 						</div>
 						<div class="column right" style="margin-top:2%">
-							<button>UP</button>
-							<h5>{{entry[4]}}</h5>
-							<button>DOWN</button>
+							%if user != "Guest":
+								<button>UP</button>
+								<h5>{{entry[4]}}</h5>
+								<button>DOWN</button>
+							%else:
+								<a  href="/login"><button>UP</button></a>
+								<h5>{{entry[4]}}</h5>
+								<a  href="/login"><button>DOWN</button></a>
+							%end
 						</div>
 					</div>
 					<div class="row" style="margin-top:3%;">
-						<div class="column littleleft">
-							<button>PIN</button>
-						</div>
+					%if user != "Guest":
+						%if user[0][5] == 1:
+							<div class="column littleleft">
+								<button>PIN</button>
+							</div>
+						%end
+						%if user[0][0] == entry[2]:
+							<div class="column littlerightcomment">
+								<button>DELETE</button>
+							</div>
+						%end
+					%else:
 						<div class="column littlemiddle">
-							<button>SAVE</button>
+							<a  href="/login"><button>SAVE</button></a>
 						</div>
-						<div class="column littleright">
-							<button>DELETE</button>
-						</div>
+					%end
 					</div>
 				</div>
 			%end

@@ -109,16 +109,19 @@ def do_signup():
     return template('login.tpl', Registration_Success=True, LogInFailed=False)
     
 @route('/threadpage/<threadnumber>')
+@route('/threadpage/<threadnumber>/0')
 def threadpage(threadnumber):
-    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 1;"
+#    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 1;"
+    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1;"
     cur.execute(statement)
     PinnedComments = cur.fetchall()
-    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 0;"
+#    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 0 LIMIT 20;"
+    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20;"
     cur.execute(statement)
     UnPinnedComments = cur.fetchall()
     #DATABASE TO VARIABLES FOR COMMENT LIST -- done but not testing yet for displaying
     user = Cookie_Setting()
-    return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments)
+    return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments, threadnumber=threadnumber)
     
 @route('/threadpage/<threadnumber>/page/<pagenumber>')
 def threadpage(threadnumber, pagenumber):
@@ -199,6 +202,26 @@ def savedpage(pagenumber):
     Saved_Threads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
     return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=offset_num)
+
+@route('/newthread')
+def newpost():
+    user_session_id = request.get_cookie("user_session_id")
+    user = sessions[user_session_id]
+    username = user[0][0]
+    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
+    cur.execute(statement)
+    stored_info = cur.fetchall()
+    return template('newthread.tpl', user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+
+@route('/newpost/<threadnumber>')
+def newpost(threadnumber):
+    user_session_id = request.get_cookie("user_session_id")
+    user = sessions[user_session_id]
+    username = user[0][0]
+    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
+    cur.execute(statement)
+    stored_info = cur.fetchall()
+    return template('newpost.tpl', threadnumber=threadnumber, user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
         
 @route('/static/<filename>')
 def server_static(filename):

@@ -23,6 +23,9 @@
 		<a href="/saved">Saved Threads</a>
 	%end
 		<a href="/" class="active">Thread List</a>
+	%if user != "Guest":
+		<a href="/newthread">New Thread</a>
+	%end
 	</div>
 	<div style="margin-top:80px;">
 		<div>
