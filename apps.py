@@ -223,7 +223,7 @@ def do_newpost(threadnumber):
     content=request.forms.get('content')
     userid = user[0][6]
     username = user[0][0]
-    re.sub('[^0-9][0-9]{5}[^0-9]', '<a href="/threadpage/\1">\1</a>', content)
+    content = re.sub(r'([0-9]{5})', r'<a href="/threadpage/\1">\1</a>', content)
     threadid = threadnumber
     statement = f"INSERT INTO Comment (Thread_ID, User_ID, Username, Date_Created, Body_Text) VALUES (?, ?, ?, datetime('now'), ?);"
     data_tuple = (threadid, userid, username, content)
