@@ -111,15 +111,12 @@ def do_signup():
 @route('/threadpage/<threadnumber>')
 @route('/threadpage/<threadnumber>/0')
 def threadpage(threadnumber):
-#    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 1;"
     statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1;"
     cur.execute(statement)
     PinnedComments = cur.fetchall()
-#    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' AND isPinned = 0 LIMIT 20;"
     statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20;"
     cur.execute(statement)
     UnPinnedComments = cur.fetchall()
-    #DATABASE TO VARIABLES FOR COMMENT LIST -- done but not testing yet for displaying
     user = Cookie_Setting()
     return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments, threadnumber=threadnumber)
     
@@ -127,12 +124,7 @@ def threadpage(threadnumber):
 def threadpage(threadnumber, pagenumber):
     pagenumber = int(pagenumber)
     offset_num = (pagenumber + 1) * 20
-    statement = f"SELECT Comment_ID, Date_Created, Body_Text, Score from Comment WHERE Thread_ID = '{threadnumber}' LIMIT 20 OFFSET {offset_num};"
-    cur.execute(statement)
-    Comments = cur.fetchall()
-    #DATABASE TO VARIABLES FOR COMMENT LIST -- done but not testing yet for displaying
-    user = Cookie_Setting()
-    return template("threadpage.tpl", user=user, Comments=Comments)
+    return template("threadpage.tpl", user=user, UnPinnedComments=UnPinnedComments)
     
 @route('/useraccount')
 def useraccount():
@@ -191,16 +183,9 @@ def saved():
 @route('/saved/<pagenumber>')
 def savedpage(pagenumber):
     user = Cookie_Setting()
-    username = user[0][0]
+    userid = user[0][6]
     pagenumber = int(pagenumber)
     offset_num = (pagenumber + 1) * 20
-    statement = f"SELECT COUNT(*) from Thread WHERE Username = '{username}' LIMIT 20"
-    cur.execute(statement)
-    count = cur.fetchall()
-    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text, Date_Made, Score, User_ID from Thread WHERE Username = '{username}' LIMIT 20 OFFSET {offset_num};"
-    cur.execute(statement)
-    Saved_Threads = cur.fetchall()
-    #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
     return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=offset_num)
 
 @route('/newthread')
@@ -216,12 +201,16 @@ def do_newthread():
     userid = user[0][6]
     username = user[0][0]
     re.sub('[^0-9][0-9]{5}[^0-9]', '<a href="/threadpage/\1">\1</a>', content)
-    statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES (title, userid, username, datetime('now')) OUTPUT Thread.Thread_ID;"
-    cur.execute(statement)
+    statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES(?, ?, ?, datetime('now')) RETURNING Thread_ID;"
+    data_tuple = (title, userid, username)
+    cur.execute(statement, data_tuple)
     threadid = cur.fetchall()
     threadid = threadid[0][0]
-    statement = f"INSERT INTO Comment (Thread_ID, User_ID, Username, Date_Made, Body_Text) VALUES (threadid, userid, username, datetime('now'), content) OUTPUT Thread_ID;"
-    cur.execute(statement)
+    statement = f"INSERT INTO Comment (Thread_ID, User_ID, Username, Date_Created, Body_Text) VALUES (?, ?, ?, datetime('now'), ?);"
+    data_tuple = (threadid, userid, username, content)
+    cur.execute(statement, data_tuple)
+    db.commit()
+    return redirect('/')
 
 @route('/newpost/<threadnumber>')
 def newpost(threadnumber):
