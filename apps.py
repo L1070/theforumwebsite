@@ -1,7 +1,7 @@
 from bottle import route, run, template, request, SimpleTemplate
 from bottle import response, post, get, delete, put, view, redirect, response, static_file
 import uuid
-import os, json
+import os, json, re
 import sqlite3
 
 sessions = {}
@@ -59,13 +59,13 @@ def login():
 def do_login():
     username = request.forms.get('username')
     password = request.forms.get('password')
-    statement = f"SELECT username from users WHERE username='{username}' AND Password = '{password}';"
+    statement = f"SELECT User_ID from users WHERE username='{username}' AND Password = '{password}';"
     cur.execute(statement)
     if not cur.fetchone():
         user = Cookie_Setting()
         return template("Login.tpl", LogInFailed=True, Registration_Success=False, user=user)
     user_session_id = str(uuid.uuid4())
-    statement = f"SELECT Username, First_Name, Last_Name, Email_Address, Registered_Date, isAdmin FROM Users Where Username = '{username}'"
+    statement = f"SELECT Username, First_Name, Last_Name, Email_Address, Registered_Date, isAdmin, User_ID FROM Users Where Username = '{username}'"
     cur.execute(statement)
     sessions[user_session_id] = cur.fetchall()
     response.set_cookie("user_session_id", user_session_id)
@@ -178,11 +178,11 @@ def do_changeaccount():
 @route('/saved/0')
 def saved():
     user = Cookie_Setting()
-    username = user[0][0]
-    statement = f"SELECT COUNT(*) from Thread WHERE User_ID = '{username}' LIMIT 20;"
+    userid = user[0][6]
+    statement = f"SELECT COUNT(*) from Thread WHERE User_ID = '{userid}';"
     cur.execute(statement)
     count = cur.fetchall()
-    statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE Username = '{username}' LIMIT 20;"
+    statement = f"SELECT Saved.Thread_ID, Title_Name, Username, Date_Made, Score, Thread.User_ID from Saved JOIN Thread ON Saved.Thread_ID=Thread.Thread_ID WHERE Saved.User_ID = '{userid}' LIMIT 20;"
     cur.execute(statement)
     Saved_Threads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
@@ -197,21 +197,31 @@ def savedpage(pagenumber):
     statement = f"SELECT COUNT(*) from Thread WHERE Username = '{username}' LIMIT 20"
     cur.execute(statement)
     count = cur.fetchall()
-    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text, Date_Made, Score from Thread WHERE Username = '{username}' LIMIT 20 OFFSET {offset_num};"
+    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text, Date_Made, Score, User_ID from Thread WHERE Username = '{username}' LIMIT 20 OFFSET {offset_num};"
     cur.execute(statement)
     Saved_Threads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
     return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=offset_num)
 
 @route('/newthread')
-def newpost():
-    user_session_id = request.get_cookie("user_session_id")
-    user = sessions[user_session_id]
+def newthread():
+    user = Cookie_Setting()
+    return template('newthread.tpl', user=user)
+
+@route('/newthread', method='POST')
+def do_newthread():
+    user=Cookie_Setting()
+    title=request.forms.get('title')
+    content=request.forms.get('content')
+    userid = user[0][6]
     username = user[0][0]
-    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
+    re.sub('[^0-9][0-9]{5}[^0-9]', '<a href="/threadpage/\1">\1</a>', content)
+    statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES (title, userid, username, datetime('now')) OUTPUT Thread.Thread_ID;"
     cur.execute(statement)
-    stored_info = cur.fetchall()
-    return template('newthread.tpl', user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+    threadid = cur.fetchall()
+    threadid = threadid[0][0]
+    statement = f"INSERT INTO Comment (Thread_ID, User_ID, Username, Date_Made, Body_Text) VALUES (threadid, userid, username, datetime('now'), content) OUTPUT Thread_ID;"
+    cur.execute(statement)
 
 @route('/newpost/<threadnumber>')
 def newpost(threadnumber):

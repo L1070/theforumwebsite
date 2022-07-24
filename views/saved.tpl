@@ -65,29 +65,32 @@
 						</div>
 					</div>
 					<div class="row" style="margin-top:3%;">
-					%if user != "Guest":
-						%if user[0][5] == 1:
-							<div class="column littleleft">
-								<button>PIN</button>
-							</div>
-							<div class="column littlemiddleadmin">
-								<button>SAVE</button>
-							</div>
+						%if user != "Guest":
+							%if user[0][5] == 1:
+								<div class="column littleleft">
+									<button>PIN</button>
+								</div>
+								<div class="column littlemiddleadmin">
+									<button>SAVE</button>
+								</div>
+									<div class="column littleright">
+										<button>DELETE</button>
+									</div>
+							%else:
+								<div class="column littlemiddle">
+									<button>SAVE</button>
+								</div>
+								%if user[0][6] == entry[5]:
+									<div class="column littleright">
+										<button>DELETE</button>
+									</div>
+								%end
+							%end
 						%else:
 							<div class="column littlemiddle">
-								<button>SAVE</button>
+								<a  href="/login"><button>SAVE</button></a>
 							</div>
 						%end
-						%if user[0][0] == entry[2]:
-							<div class="column littleright">
-								<button>DELETE</button>
-							</div>
-						%end
-					%else:
-						<div class="column littlemiddle">
-							<a  href="/login"><button>SAVE</button></a>
-						</div>
-					%end
 					</div>
 				</div>
 			%end
