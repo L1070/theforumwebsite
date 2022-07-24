@@ -26,10 +26,10 @@ def Cookie_Setting():
 @route('/0')
 @view('/')
 def index():
-    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1;"
+    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score, User_ID from Thread WHERE isPinned = 1;"
     cur.execute(statement)
     PinnedThreads = cur.fetchall()
-    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20;"
+    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score, User_ID from Thread WHERE isPinned = 0 LIMIT 20;"
     cur.execute(statement)
     UnPinnedThreads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST ----- Not displaying anything...
@@ -43,7 +43,7 @@ def index():
 def index(pagenumber):
     pagenumber = int(pagenumber)
     offset_num = (pagenumber + 1) * 20
-    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20 OFFSET {offset_num};"
+    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text Date_Made, Score, User_ID from Thread WHERE isPinned = 0 LIMIT 20 OFFSET {offset_num};"
     cur.execute(statement)
     UnPinnedThreads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST ------ Done, but not testing for displaying yet
@@ -179,7 +179,7 @@ def do_changeaccount():
 def saved():
     user = Cookie_Setting()
     username = user[0][0]
-    statement = f"SELECT COUNT(*) from Thread WHERE Username = '{username}' LIMIT 20;"
+    statement = f"SELECT COUNT(*) from Thread WHERE User_ID = '{username}' LIMIT 20;"
     cur.execute(statement)
     count = cur.fetchall()
     statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE Username = '{username}' LIMIT 20;"
