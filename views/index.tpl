@@ -12,7 +12,7 @@
 		<a href="/">
 			<img src="/static/logo.png" width="30%">
 		</a>
-	</div> 
+	</div>
 	<div class="topnav">
 	%if user == "Guest":
 		<a href="/signup">Registration</a>
@@ -28,6 +28,55 @@
 		%for thread in PinnedThreads:
 			<p><span>{{thread[0]}}, {{thread[1]}}, {{thread[2]}}, {{thread[3]}}, {{thread[4]}}</span></p>
 			%end
+	<div style="margin-top:80px;">
+		<div>
+			<h1>
+				Thread List
+			</h1>
+		</div>
+		<div>
+			%if user == "Guest":
+				<p>Guest</p>
+			%else:
+				%if user[0][5] == 1:
+					<p>Admin {{user[0][1]}}</p>
+				%else:
+					<p>{{user[0][0]}}</p>
+				%end
+			%end
+		</div>
+		<div>
+			%for entry in examplethreadlist:
+				<div class="threadbox">
+					<div class="row">
+						<div class="column left">
+							<h2>{{entry[0]}}</h2>
+						</div>
+						<div class="column middle">
+							<a href="/threadpage/{{entry[0]}}"><h1>{{entry[1]}}</h1></a>
+							<h3>{{entry[2]}} - {{entry[3]}}</h3>
+							
+						</div>
+						<div class="column right" style="margin-top:2%">
+							<button>UP</button>
+							<h5>{{entry[4]}}</h5>
+							<button>DOWN</button>
+						</div>
+					</div>
+					<div class="row" style="margin-top:3%;">
+						<div class="column littleleft">
+							<button>PIN</button>
+						</div>
+						<div class="column littlemiddle">
+							<button>SAVE</button>
+						</div>
+						<div class="column littleright">
+							<button>DELETE</button>
+						</div>
+					</div>
+				</div>
+			%end
+		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
