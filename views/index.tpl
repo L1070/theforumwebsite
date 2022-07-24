@@ -74,14 +74,14 @@
 									<button>PIN</button>
 								</div>
 								<div class="column littlemiddleadmin">
-									<button>SAVE</button>
+									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">Save</button></form>
 								</div>
 									<div class="column littleright">
 										<button>DELETE</button>
 									</div>
 							%else:
 								<div class="column littlemiddle">
-									<button>SAVE</button>
+									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">Save</button></form>
 								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
@@ -129,13 +129,14 @@
 								</div>
 								<div class="column littlemiddleadmin">
 									<button>SAVE</button>
+									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">Save</button></form>
 								</div>
 									<div class="column littleright">
 										<button>DELETE</button>
 									</div>
 							%else:
 								<div class="column littlemiddle">
-									<button>SAVE</button>
+									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">Save</button></form>
 								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
