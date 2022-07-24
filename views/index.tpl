@@ -128,7 +128,7 @@
 									<button>PIN</button>
 								</div>
 								<div class="column littlemiddleadmin">
-									<button>SAVE</button>
+									<form action="/savethread" method="post"><input type="submit" name="threadid" value="Save"></form>
 								</div>
 									<div class="column littleright">
 										<button>DELETE</button>

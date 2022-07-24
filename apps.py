@@ -200,7 +200,7 @@ def do_newthread():
     content=request.forms.get('content')
     userid = user[0][6]
     username = user[0][0]
-    re.sub('[^0-9][0-9]{5}[^0-9]', '<a href="/threadpage/\1">\1</a>', content)
+    content = re.sub(r'([0-9]{5})', r'<a href="/threadpage/\1">\1</a>', content)
     statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES(?, ?, ?, datetime('now')) RETURNING Thread_ID;"
     data_tuple = (title, userid, username)
     cur.execute(statement, data_tuple)
@@ -230,6 +230,17 @@ def do_newpost(threadnumber):
     cur.execute(statement, data_tuple)
     db.commit()
     return redirect('/')
+    
+@route('/savethread', method='POST')
+def button_savethread():
+    userid=Cookie_Setting()
+    userid=userid[0][6]
+    threadid=request.forms.get('threadid')
+    statement = f"INSERT INTO Saved (Thread_ID, User_ID) VALUES (?, ?);"
+    data_tuple = (threadid, userid)
+    cur.execute(statement, data_tuple)
+    db.commit()
+    return;
 
 @route('/static/<filename>')
 def server_static(filename):
