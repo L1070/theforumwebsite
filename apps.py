@@ -130,41 +130,59 @@ def threadpage(threadnumber, pagenumber):
 def useraccount():
     user_session_id = request.get_cookie("user_session_id")
     user = sessions[user_session_id]
-    username = user[0][0]
-    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
+    print(user)
+    user_ID = user[0][6]
+    statement = f"SELECT Password from Users WHERE User_ID='{user_ID}';"
     cur.execute(statement)
-    stored_info = cur.fetchall()
+    stored_info = cur.fetchone()
+    print(stored_info[0])
     #DATABASE TO VARIABLES FOR PREFILL USER ACCOUNT DETAILS -- done but not testing yet for displaying
-    return template("useraccount.tpl", user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
+    return template("useraccount.tpl", user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False, Changes_Success=False)
 
 @route('/useraccount', method='POST')
 def do_changeaccount():
+    user = Cookie_Setting()
+    user_id = user[0][6]
+    statement = f"SELECT Password from Users WHERE User_ID='{user_id}';"
+    cur.execute(statement)
+    stored_info = cur.fetchone()
     username = request.forms.get('username')
     password = request.forms.get('password')
     confirm_password = request.forms.get('confirm-password')
     first_name = request.forms.get('first-name')
     last_name = request.forms.get('last-name')
     email = request.forms.get('email-address')
-    if password != confirm_password:
-        user = Cookie_Setting()
-        return template('useraccount.tpl', Username_Taken=False, Email_Taken=False, Not_Same_Password=True, user=user)
-    print(username)
+    if password != confirm_password and stored_info[0] == password:
+        return template('useraccount.tpl', Username_Taken=False, Email_Taken=False, Not_Same_Password=True, user=user, Changes_Success=False, stored_info=stored_info)
+    elif password == confirm_password and stored_info[0] != password:
+        statement = f"UPDATE USERS SET Password = '{password}' WHERE User_ID = {user_id}"
+        cur.execute(statement)
+        db.commit()
     statement = f"SELECT Username FROM Users WHERE Username = '{username}'"
     cur.execute(statement)
-    if cur.fetchone() is not None:
-        user = Cookie_Setting()
-        return template('useraccount.tpl', Username_Taken=True, Email_Taken=False, Not_Same_Password=False, user=user)
+    if cur.fetchone() is not None and user[0][0] != username:
+        return template('useraccount.tpl', Username_Taken=True, Email_Taken=False, Not_Same_Password=False, user=user, Changes_Success=False, stored_info=stored_info)
+    else:
+        statement = f"UPDATE USERS SET Username = '{username}' WHERE User_ID = {user_id}"
+        cur.execute(statement)
+        db.commit()
     statement = f"SELECT Email_Address FROM Users WHERE Email_Address = '{email}'"
     cur.execute(statement)
-    if cur.fetchone() is not None:
-        user = Cookie_Setting()
-        return template('useraccount.tpl', Email_Taken=True, Username_Taken=False, Not_Same_Password=False)
-    statement = "INSERT INTO Users (Username, Password, First_Name, Last_Name, Email_Address, Registered_Date) VALUES (?,?,?,?,?, date('now'));"
-    data_tuple = (username, password, first_name, last_name, email)
-    cur.execute(statement, data_tuple)
-    db.commit()
-    user = Cookie_Setting()
-    return template('login.tpl', Registration_Success=True, LogInFailed=False, user=user)
+    if cur.fetchone() is not None and user[0][3] != email:
+        return template('useraccount.tpl', Email_Taken=True, Username_Taken=False, Not_Same_Password=False, Changes_Success=False, user=user, stored_info=stored_info)
+    else:
+        statement = f"UPDATE USERS SET Email_Address = '{email}' WHERE User_ID = {user_id}"
+        cur.execute(statement)
+        db.commit()
+    if user[0][1] != first_name:
+        statement = f"UPDATE USERS SET First_Name = '{first_name}' WHERE User_ID = {user_id}"
+        cur.execute(statement)
+        db.commit()
+    if user[0][2] != last_name:
+        statement = f"UPDATE USERS SET Last_Name = '{last_name}' WHERE User_ID = {user_id}"
+        cur.execute(statement)
+        db.commit()
+    return template('useraccount.tpl', Email_Taken=False, Username_Taken=False, Not_Same_Password=False, Changes_Success=True, user=user, stored_info=stored_info)
 
 @route('/saved')
 @route('/saved/0')
