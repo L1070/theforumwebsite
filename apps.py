@@ -324,6 +324,30 @@ def button_pincomment():
     db.commit()
     return
 
+@route('/<threadnumber>/up', method='POST')
+@route('/<threadnumber>/up', method='GET')
+def up_button(threadnumber):
+    user = Cookie_Setting()
+    statement = f"SELECT Score FROM Thread WHERE Thread_ID = {threadnumber};"
+    cur.execute(statement)
+    thread_score = cur.fetchone()
+    score = thread_score[0] + 1
+    statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
+    cur.execute(statement)
+    db.commit() 
+
+@route('/<threadnumber>/down', method='POST')
+@route('/<threadnumber>/down', method='GET')
+def down_button(threadnumber):
+    user = Cookie_Setting()
+    statement = f"SELECT Score FROM Thread WHERE Thread_ID = {threadnumber};"
+    cur.execute(statement)
+    thread_score = cur.fetchone()
+    score = thread_score[0] - 1
+    statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
+    cur.execute(statement)
+    db.commit() 
+
 @route('/static/<filename>')
 def server_static(filename):
     return static_file(filename, root='./static')
