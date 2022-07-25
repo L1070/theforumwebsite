@@ -128,7 +128,6 @@
 									<button>PIN</button>
 								</div>
 								<div class="column littlemiddleadmin">
-									<button>SAVE</button>
 									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">Save</button></form>
 								</div>
 									<div class="column littleright">

@@ -111,18 +111,17 @@ def do_signup():
 @route('/threadpage/<threadnumber>')
 @route('/threadpage/<threadnumber>/0')
 def threadpage(threadnumber):
-    statement = f"SELECT Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1 AND Thread_ID = {threadnumber};"
+    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1;"
     cur.execute(statement)
     PinnedComments = cur.fetchall()
-    statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 AND Thread_ID = {threadnumber} LIMIT 20;"
+    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20;"
     cur.execute(statement)
     UnPinnedComments = cur.fetchall()
     user = Cookie_Setting()
     return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments, threadnumber=threadnumber)
     
-@route('/threadpage/<threadnumber>/page/<pagenumber>')
+@route('/threadpage/<threadnumber>/<pagenumber>')
 def threadpage(threadnumber, pagenumber):
-    user = Cookie_Setting()
     pagenumber = int(pagenumber)
     offset_num = (pagenumber + 1) * 20
     statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 AND Thread_ID = {threadnumber} LIMIT 20 OFFSET {offset_num};"
@@ -222,7 +221,7 @@ def do_newthread():
     content=request.forms.get('content')
     userid = user[0][6]
     username = user[0][0]
-    re.sub('[^0-9][0-9]{5}[^0-9]', '<a href="/threadpage/\1">\1</a>', content)
+    content = re.sub(r'([0-9]{5})', r'<a href="/threadpage/\1">\1</a>', content)
     statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES(?, ?, ?, datetime('now')) RETURNING Thread_ID;"
     data_tuple = (title, userid, username)
     cur.execute(statement, data_tuple)
@@ -236,14 +235,34 @@ def do_newthread():
 
 @route('/newpost/<threadnumber>')
 def newpost(threadnumber):
-    user_session_id = request.get_cookie("user_session_id")
-    user = sessions[user_session_id]
+    user = Cookie_Setting()
+    return template('newpost.tpl', user=user, threadnumber=threadnumber)
+
+@route('/newpost/<threadnumber>', method='POST')
+def do_newpost(threadnumber):
+    user=Cookie_Setting()
+    content=request.forms.get('content')
+    userid = user[0][6]
     username = user[0][0]
-    statement = f"SELECT Username, Password, First_Name, Last_Name, Email_Address from Users WHERE Username='{username}';"
-    cur.execute(statement)
-    stored_info = cur.fetchall()
-    return template('newpost.tpl', threadnumber=threadnumber, user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False)
-        
+    content = re.sub(r'([0-9]{5})', r'<a href="/threadpage/\1">\1</a>', content)
+    threadid = threadnumber
+    statement = f"INSERT INTO Comment (Thread_ID, User_ID, Username, Date_Created, Body_Text) VALUES (?, ?, ?, datetime('now'), ?);"
+    data_tuple = (threadid, userid, username, content)
+    cur.execute(statement, data_tuple)
+    db.commit()
+    return redirect('/')
+    
+@route('/savethread', method='POST')
+def button_savethread():
+    userid=Cookie_Setting()
+    userid=userid[0][6]
+    threadid=request.forms.get('threadid')
+    statement = f"INSERT INTO Saved (Thread_ID, User_ID) VALUES (?, ?);"
+    data_tuple = (threadid, userid)
+    cur.execute(statement, data_tuple)
+    db.commit()
+    return;
+
 @route('/static/<filename>')
 def server_static(filename):
     return static_file(filename, root='./static')

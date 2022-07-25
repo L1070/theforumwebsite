@@ -79,10 +79,6 @@
 								<button>DELETE</button>
 							</div>
 						%end
-					%else:
-						<div class="column littlemiddle">
-							<a  href="/login"><button>SAVE</button></a>
-						</div>
 					%end
 					</div>
 				</div>
@@ -123,10 +119,6 @@
 								<button>DELETE</button>
 							</div>
 						%end
-					%else:
-						<div class="column littlemiddle">
-							<a  href="/login"><button>SAVE</button></a>
-						</div>
 					%end
 					</div>
 				</div>

@@ -70,16 +70,10 @@
 								<div class="column littleleft">
 									<button>PIN</button>
 								</div>
-								<div class="column littlemiddleadmin">
-									<button>SAVE</button>
+								<div class="column littleright">
+									<button>DELETE</button>
 								</div>
-									<div class="column littleright">
-										<button>DELETE</button>
-									</div>
 							%else:
-								<div class="column littlemiddle">
-									<button>SAVE</button>
-								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
 										<button>DELETE</button>
