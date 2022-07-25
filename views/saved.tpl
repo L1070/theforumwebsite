@@ -71,12 +71,12 @@
 									<button>PIN</button>
 								</div>
 								<div class="column littleright">
-									<button>DELETE</button>
+									<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 								</div>
 							%else:
 								%if user[0][6] == entry[5]:
 									<div class="column littlerightcomment">
-										<button>DELETE</button>
+										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 								%end
 							%end

@@ -76,7 +76,7 @@
 						%end
 						%if user[0][0] == entry[2]:
 							<div class="column littlerightcomment">
-								<button>DELETE</button>
+								<form action="/deletecomment" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">DELETE</button></form>
 							</div>
 						%end
 					%end
@@ -116,7 +116,7 @@
 						%end
 						%if user[0][0] == entry[2]:
 							<div class="column littlerightcomment">
-								<button>DELETE</button>
+								<form action="/deletecomment" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">DELETE</button></form>
 							</div>
 						%end
 					%end

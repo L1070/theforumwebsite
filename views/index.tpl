@@ -77,7 +77,7 @@
 									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
 								</div>
 									<div class="column littleright">
-										<button>DELETE</button>
+										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 							%else:
 								<div class="column littlemiddle">
@@ -85,7 +85,7 @@
 								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
-										<button>DELETE</button>
+										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 								%end
 							%end
@@ -131,7 +131,7 @@
 									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
 								</div>
 									<div class="column littleright">
-										<button>DELETE</button>
+										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 							%else:
 								<div class="column littlemiddle">
@@ -139,7 +139,7 @@
 								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
-										<button>DELETE</button>
+										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 								%end
 							%end

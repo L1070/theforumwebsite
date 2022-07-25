@@ -133,12 +133,10 @@ def threadpage(threadnumber, pagenumber):
 def useraccount():
     user_session_id = request.get_cookie("user_session_id")
     user = sessions[user_session_id]
-    print(user)
     user_ID = user[0][6]
     statement = f"SELECT Password from Users WHERE User_ID='{user_ID}';"
     cur.execute(statement)
     stored_info = cur.fetchone()
-    print(stored_info[0])
     #DATABASE TO VARIABLES FOR PREFILL USER ACCOUNT DETAILS -- done but not testing yet for displaying
     return template("useraccount.tpl", user=user, stored_info=stored_info, Email_Taken=False, Username_Taken=False, Not_Same_Password=False, Changes_Success=False)
 
@@ -185,6 +183,11 @@ def do_changeaccount():
         statement = f"UPDATE USERS SET Last_Name = '{last_name}' WHERE User_ID = {user_id}"
         cur.execute(statement)
         db.commit()
+    user_session_id = str(uuid.uuid4())
+    statement = f"SELECT Username, First_Name, Last_Name, Email_Address, Registered_Date, isAdmin, User_ID FROM Users Where Username = '{username}'"
+    cur.execute(statement)
+    sessions[user_session_id] = cur.fetchall()
+    response.set_cookie("user_session_id", user_session_id)
     return template('useraccount.tpl', Email_Taken=False, Username_Taken=False, Not_Same_Password=False, Changes_Success=True, user=user, stored_info=stored_info)
 
 @route('/saved')
@@ -261,7 +264,31 @@ def button_savethread():
     data_tuple = (threadid, userid)
     cur.execute(statement, data_tuple)
     db.commit()
-    return;
+    return
+    
+@route('/deletethread', method='POST')
+def button_deletethread():
+    userid=Cookie_Setting()
+    userid=userid[0][6]
+    threadid=request.forms.get('threadid')
+    statement = f"DELETE FROM Thread WHERE Thread_ID = {threadid};"
+    cur.execute(statement)
+    statement = f"DELETE FROM Comment WHERE Thread_ID = {threadid};"
+    cur.execute(statement)
+    statement = f"DELETE FROM Saved WHERE Thread_ID = {threadid};"
+    cur.execute(statement)
+    db.commit()
+    return
+    
+@route('/deletecomment', method='POST')
+def button_deletethread():
+    userid=Cookie_Setting()
+    userid=userid[0][6]
+    commentid=request.forms.get('commentid')
+    statement = f"DELETE FROM Comment WHERE Comment_ID = {commentid};"
+    cur.execute(statement)
+    db.commit()
+    return
 
 @route('/static/<filename>')
 def server_static(filename):
