@@ -75,7 +75,7 @@
 								</div>
 							%else:
 								%if user[0][6] == entry[5]:
-									<div class="column littleright">
+									<div class="column littlerightcomment">
 										<button>DELETE</button>
 									</div>
 								%end
