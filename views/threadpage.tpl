@@ -57,9 +57,9 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<button>UP</button>
+								<a href="/{{entry[0]}}/up"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
-								<button>DOWN</button>
+								<a href="/{{entry[0]}}/down"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
@@ -97,9 +97,9 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<button>UP</button>
+								<a href="/{{entry[0]}}/up"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
-								<button>DOWN</button>
+								<a href="/{{entry[0]}}/down"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
