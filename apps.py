@@ -111,10 +111,10 @@ def do_signup():
 @route('/threadpage/<threadnumber>')
 @route('/threadpage/<threadnumber>/0')
 def threadpage(threadnumber):
-    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1;"
+    statement = f"SELECT Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 1 AND Thread_ID = {threadnumber};"
     cur.execute(statement)
     PinnedComments = cur.fetchall()
-    statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 LIMIT 20;"
+    statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 AND Thread_ID = {threadnumber} LIMIT 20;"
     cur.execute(statement)
     UnPinnedComments = cur.fetchall()
     user = Cookie_Setting()
@@ -122,9 +122,13 @@ def threadpage(threadnumber):
     
 @route('/threadpage/<threadnumber>/page/<pagenumber>')
 def threadpage(threadnumber, pagenumber):
+    user = Cookie_Setting()
     pagenumber = int(pagenumber)
     offset_num = (pagenumber + 1) * 20
-    return template("threadpage.tpl", user=user, UnPinnedComments=UnPinnedComments)
+    statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score from Thread WHERE isPinned = 0 AND Thread_ID = {threadnumber} LIMIT 20 OFFSET {offset_num};"
+    cur.execute(statement)
+    UnPinnedComments = cur.fetchall()
+    return template("threadpage.tpl", user=user, UnPinnedComments=UnPinnedComments, PinnedComments="")
     
 @route('/useraccount')
 def useraccount():
