@@ -71,7 +71,7 @@
 					%if user != "Guest":
 						%if user[0][5] == 1:
 							<div class="column littleleft">
-								<button>PIN</button>
+								<form action="/pincomment" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">PIN</button></form>
 							</div>
 						%end
 						%if user[0][0] == entry[2]:
@@ -111,7 +111,7 @@
 					%if user != "Guest":
 						%if user[0][5] == 1:
 							<div class="column littleleft">
-								<button>PIN</button>
+								<form action="/pincomment" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">PIN</button></form>
 							</div>
 						%end
 						%if user[0][0] == entry[2]:

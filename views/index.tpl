@@ -71,7 +71,7 @@
 						%if user != "Guest":
 							%if user[0][5] == 1:
 								<div class="column littleleft">
-									<button>PIN</button>
+									<form action="/pinthread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
 								</div>
 								<div class="column littlemiddleadmin">
 									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
@@ -125,7 +125,7 @@
 						%if user != "Guest":
 							%if user[0][5] == 1:
 								<div class="column littleleft">
-									<button>PIN</button>
+									<form action="/pinthread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
 								</div>
 								<div class="column littlemiddleadmin">
 									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>

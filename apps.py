@@ -281,11 +281,45 @@ def button_deletethread():
     return
     
 @route('/deletecomment', method='POST')
-def button_deletethread():
+def button_deletecomment():
     userid=Cookie_Setting()
     userid=userid[0][6]
     commentid=request.forms.get('commentid')
     statement = f"DELETE FROM Comment WHERE Comment_ID = {commentid};"
+    cur.execute(statement)
+    db.commit()
+    return
+    
+@route('/pinthread', method='POST')
+def button_pinthread():
+    userid=Cookie_Setting()
+    userid=userid[0][6]
+    threadid=request.forms.get('threadid')
+    statement = f"SELECT isPinned FROM Thread WHERE Thread_ID = {threadid};"
+    cur.execute(statement)
+    ispinned = cur.fetchall()
+    ispinned = ispinned[0][0]
+    if ispinned == 0:
+        statement = f"UPDATE Thread SET isPinned = 1 WHERE Thread_ID = {threadid};"
+    else:
+        statement = f"UPDATE Thread SET isPinned = 0 WHERE Thread_ID = {threadid};"
+    cur.execute(statement)
+    db.commit()
+    return
+    
+@route('/pincomment', method='POST')
+def button_pincomment():
+    userid=Cookie_Setting()
+    userid=userid[0][6]
+    commentid=request.forms.get('commentid')
+    statement = f"SELECT isPinned FROM Comment WHERE Comment_ID = {commentid};"
+    cur.execute(statement)
+    ispinned = cur.fetchall()
+    ispinned = ispinned[0][0]
+    if ispinned == 0:
+        statement = f"UPDATE Comment SET isPinned = 1 WHERE Comment_ID = {commentid};"
+    else:
+        statement = f"UPDATE Comment SET isPinned = 0 WHERE Comment_ID = {commentid};"
     cur.execute(statement)
     db.commit()
     return
