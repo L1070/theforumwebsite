@@ -53,7 +53,7 @@
 						</div>
 						<div class="column middle">
 							<h3>{{entry[2]}} - {{entry[3]}}</h3>
-							<p>{{entry[1]}}</p>
+							<p style="display:inline;">{{!entry[1]}}</p>
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
@@ -93,7 +93,7 @@
 						</div>
 						<div class="column middle">
 							<h3>{{entry[2]}} - {{entry[3]}}</h3>
-							<p>{{entry[1]}}</p>
+							<p style="display:inline;">{{!entry[1]}}</p>
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":

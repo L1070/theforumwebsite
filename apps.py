@@ -224,7 +224,7 @@ def do_newthread():
     content=request.forms.get('content')
     userid = user[0][6]
     username = user[0][0]
-    content = re.sub(r'([0-9]{5})', r'<a href="/threadpage/\1">\1</a>', content)
+    content = re.sub(r'([0-9]{5})', r'</p><a href="/threadpage/\1" style="display:inline;">\1</a><p style="display:inline;">', content)
     statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES(?, ?, ?, datetime('now')) RETURNING Thread_ID;"
     data_tuple = (title, userid, username)
     cur.execute(statement, data_tuple)
