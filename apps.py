@@ -26,6 +26,11 @@ def Cookie_Setting():
 @route('/0')
 @view('/')
 def index():
+    user = Cookie_Setting()
+    statement = f"SELECT COUNT(*) from Thread WHERE isPinned = 0;"
+    cur.execute(statement)
+    count = cur.fetchall()
+    count = count[0][0]
     statement = "SELECT Thread_ID, Title_Name, Username, Date_Made, Score, User_ID from Thread WHERE isPinned = 1;"
     cur.execute(statement)
     PinnedThreads = cur.fetchall()
@@ -34,21 +39,26 @@ def index():
     UnPinnedThreads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST ----- Not displaying anything...
     user = Cookie_Setting()
-    return template("index.tpl", user=user, PinnedThreads=PinnedThreads, UnPinnedThreads=UnPinnedThreads, offset_num=0)
+    return template("index.tpl", user=user, PinnedThreads=PinnedThreads, UnPinnedThreads=UnPinnedThreads, count=count, offset_num=0, pagenumber=0)
 
 @route('/threadlist/page/<pagenumber>')
 @route('/page/<pagenumber>')
 @route('/<pagenumber>')
 @view('/page/<pagenumber>')
 def index(pagenumber):
-    pagenumber = int(pagenumber)
-    offset_num = (pagenumber + 1) * 20
-    statement = f"SELECT Thread_ID, Title_Name, Username, Body_Text Date_Made, Score, User_ID from Thread WHERE isPinned = 0 LIMIT 20 OFFSET {offset_num};"
+    user = Cookie_Setting()
+    statement = f"SELECT COUNT(*) from Thread WHERE isPinned = 0;"
+    cur.execute(statement)
+    count = cur.fetchall()
+    count = count[0][0]
+    pagenumber=int(pagenumber)
+    offset_num = pagenumber * 20
+    statement = f"SELECT Thread_ID, Title_Name, Username, Date_Made, Score, User_ID from Thread WHERE isPinned = 0 LIMIT 20 OFFSET {offset_num};"
     cur.execute(statement)
     UnPinnedThreads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST ------ Done, but not testing for displaying yet
     user = Cookie_Setting()
-    return template("index.tpl", user=user, PinnedThreads="", UnPinnedThreads=UnPinnedThreads, offset_num=offset_num)
+    return template("index.tpl", user=user, PinnedThreads="", UnPinnedThreads=UnPinnedThreads, count=count, offset_num=offset_num, pagenumber=pagenumber)
 
 @route('/login')
 def login():
@@ -111,6 +121,15 @@ def do_signup():
 @route('/threadpage/<threadnumber>')
 @route('/threadpage/<threadnumber>/0')
 def threadpage(threadnumber):
+    user = Cookie_Setting()
+    statement = f"SELECT COUNT(*) from Comment WHERE Thread_ID = {threadnumber} AND isPinned = 0;"
+    cur.execute(statement)
+    count = cur.fetchall()
+    count = count[0][0]
+    statement = f"SELECT Title_Name from Thread WHERE Thread_ID = {threadnumber};"
+    cur.execute(statement)
+    threadtitle = cur.fetchall()
+    threadtitle = threadtitle[0][0]
     statement = f"SELECT Comment_ID, Body_Text, Username, Date_Created, Score from Comment WHERE isPinned = 1 AND Thread_ID = {threadnumber};"
     cur.execute(statement)
     PinnedComments = cur.fetchall()
@@ -118,16 +137,26 @@ def threadpage(threadnumber):
     cur.execute(statement)
     UnPinnedComments = cur.fetchall()
     user = Cookie_Setting()
-    return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments, threadnumber=threadnumber)
+    return template("threadpage.tpl", user=user, PinnedComments=PinnedComments, UnPinnedComments=UnPinnedComments, threadnumber=threadnumber, threadtitle=threadtitle, count=count, offset_num=0, pagenumber=0)
     
 @route('/threadpage/<threadnumber>/<pagenumber>')
 def threadpage(threadnumber, pagenumber):
+    user = Cookie_Setting()
+    statement = f"SELECT COUNT(*) from Comment WHERE Thread_ID = {threadnumber} AND isPinned = 0;"
+    cur.execute(statement)
+    count = cur.fetchall()
+    count = count[0][0]
     pagenumber = int(pagenumber)
-    offset_num = (pagenumber + 1) * 20
+    offset_num = pagenumber * 20
+    statement = f"SELECT Title_Name from Thread WHERE Thread_ID = {threadnumber};"
+    cur.execute(statement)
+    threadtitle = cur.fetchall()
+    threadtitle = threadtitle[0][0]
     statement = f"SELECT Comment_ID, Body_Text, Username, Date_Created, Score from Comment WHERE isPinned = 0 AND Thread_ID = {threadnumber} LIMIT 20 OFFSET {offset_num};"
     cur.execute(statement)
     UnPinnedComments = cur.fetchall()
-    return template("threadpage.tpl", user=user, UnPinnedComments=UnPinnedComments, PinnedComments="", threadnumber=threadnumber)
+    user = Cookie_Setting()
+    return template("threadpage.tpl", user=user, PinnedComments="", UnPinnedComments=UnPinnedComments, threadnumber=threadnumber, threadtitle=threadtitle, count=count, offset_num=offset_num, pagenumber=pagenumber)
     
 @route('/useraccount')
 def useraccount():
@@ -194,23 +223,35 @@ def do_changeaccount():
 @route('/saved/0')
 def saved():
     user = Cookie_Setting()
+    if user == "":
+        return redirect("/");
     userid = user[0][6]
-    statement = f"SELECT COUNT(*) from Thread WHERE User_ID = '{userid}';"
+    statement = f"SELECT COUNT(*) from Saved WHERE User_ID = '{userid}';"
     cur.execute(statement)
     count = cur.fetchall()
+    count = count[0][0]
     statement = f"SELECT Saved.Thread_ID, Title_Name, Username, Date_Made, Score, Thread.User_ID from Saved JOIN Thread ON Saved.Thread_ID=Thread.Thread_ID WHERE Saved.User_ID = '{userid}' LIMIT 20;"
     cur.execute(statement)
     Saved_Threads = cur.fetchall()
     #DATABASE TO VARIABLES FOR THREADLIST -- done but not testing yet for displaying
-    return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=0)
+    return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=0, pagenumber=0)
         
 @route('/saved/<pagenumber>')
 def savedpage(pagenumber):
     user = Cookie_Setting()
+    if user == "": 
+        return redirect("/");
     userid = user[0][6]
+    statement = f"SELECT COUNT(*) from Saved WHERE User_ID = '{userid}';"
+    cur.execute(statement)
+    count = cur.fetchall()
+    count = count[0][0]
     pagenumber = int(pagenumber)
-    offset_num = (pagenumber + 1) * 20
-    return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=offset_num)
+    offset_num = pagenumber * 20
+    statement = f"SELECT Saved.Thread_ID, Title_Name, Username, Date_Made, Score, Thread.User_ID from Saved JOIN Thread ON Saved.Thread_ID=Thread.Thread_ID WHERE Saved.User_ID = '{userid}' LIMIT 20 OFFSET {offset_num};"
+    cur.execute(statement)
+    Saved_Threads = cur.fetchall()
+    return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=offset_num, pagenumber=pagenumber)
 
 @route('/newthread')
 def newthread():

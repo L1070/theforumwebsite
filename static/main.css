@@ -14,6 +14,14 @@
 	margin-bottom: 1%;
 }
 
+.prevnextbox {
+	width:85%;
+	height:20px;
+	margin: auto;
+	margin-bottom: 1%;
+	justify-content: center;
+}
+
 .topnav {
   position:fixed;
   overflow: hidden;
@@ -58,6 +66,10 @@
 
 .column {
   float: left;
+}
+
+.bottomcolumn {
+  float: right;
 }
 
 .left {
@@ -110,4 +122,17 @@
 .littlemiddle a:link{
 	text-decoration: none;
 	color:black;
+}
+
+.bottomleft {
+	width:30%;
+}
+
+.bottomright {
+	width:30%;
+}
+
+.bottomrightalone {
+	float:right;
+	width:50%;
 }
