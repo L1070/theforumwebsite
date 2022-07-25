@@ -260,9 +260,15 @@ def button_savethread():
     userid=Cookie_Setting()
     userid=userid[0][6]
     threadid=request.forms.get('threadid')
-    statement = f"INSERT INTO Saved (Thread_ID, User_ID) VALUES (?, ?);"
-    data_tuple = (threadid, userid)
-    cur.execute(statement, data_tuple)
+    statement = f"SELECT * FROM Saved WHERE Thread_ID = {threadid} AND User_ID = {userid};"
+    cur.execute(statement)
+    if cur.fetchone() is not None:
+        statement = f"DELETE FROM Saved WHERE Thread_ID = {threadid} AND User_ID = {userid};"
+        cur.execute(statement)
+    else:
+        statement = f"INSERT INTO Saved (Thread_ID, User_ID) VALUES (?, ?);"
+        data_tuple = (threadid, userid)
+        cur.execute(statement, data_tuple)
     db.commit()
     return
     
@@ -305,7 +311,6 @@ def button_pinthread():
         statement = f"UPDATE Thread SET isPinned = 0 WHERE Thread_ID = {threadid};"
     cur.execute(statement)
     db.commit()
-    return
     
 @route('/pincomment', method='POST')
 def button_pincomment():
@@ -322,7 +327,6 @@ def button_pincomment():
         statement = f"UPDATE Comment SET isPinned = 0 WHERE Comment_ID = {commentid};"
     cur.execute(statement)
     db.commit()
-    return
 
 @route('/<threadnumber>/up', method='POST')
 @route('/<threadnumber>/up', method='GET')
