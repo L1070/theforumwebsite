@@ -373,25 +373,101 @@ def button_pincomment():
 @route('/<threadnumber>/up', method='GET')
 def up_button(threadnumber):
     user = Cookie_Setting()
+    user_id = user[0][6]
     statement = f"SELECT Score FROM Thread WHERE Thread_ID = {threadnumber};"
     cur.execute(statement)
-    thread_score = cur.fetchone()
-    score = thread_score[0] + 1
+    score = cur.fetchone()
+    score = score[0]
+    statement = f"SELECT Status FROM Thread_Likes WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+    cur.execute(statement)
+    status = cur.fetchone()
+    if status is not None and status[0] != 0:
+        if status[0] == 1:
+            score = score - 1
+            statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = 0
+            statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            return redirect('/')
+        elif status[0] == -1:
+            score = score - 2
+            statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = -1
+            statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            return redirect('/')
+    score = score + 1
     statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
     cur.execute(statement)
-    db.commit() 
+    db.commit()
+    if status[0] == 0:
+        statement = f"UPDATE Thread SET Score = 1 WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+        cur.execute(statement)
+        db.commit()
+    else:
+        statement = f"INSERT INTO Thread_Likes (Status, Thread_ID, User_ID) VALUES (?,?,?);"
+        data_tuple = (1, threadnumber, user_id)
+        cur.execute(statement, data_tuple)
+        db.commit()
+    return redirect('/')
 
 @route('/<threadnumber>/down', method='POST')
 @route('/<threadnumber>/down', method='GET')
 def down_button(threadnumber):
     user = Cookie_Setting()
+    user_id = user[0][6]
     statement = f"SELECT Score FROM Thread WHERE Thread_ID = {threadnumber};"
     cur.execute(statement)
-    thread_score = cur.fetchone()
-    score = thread_score[0] - 1
+    score = cur.fetchone()
+    score = score[0]
+    statement = f"SELECT Status FROM Thread_Likes WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+    cur.execute(statement)
+    status = cur.fetchone()
+    if status is not None and status[0] != 0:
+        if status[0] == -1:
+            score = score + 1
+            statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = 0
+            statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            return redirect('/')
+        elif status[0] == 1:
+            score = score + 2
+            statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = 1
+            statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            return redirect('/')
+    score = score - 1
     statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
     cur.execute(statement)
-    db.commit() 
+    db.commit()
+    if status[0] == 0:
+        statement = f"UPDATE Thread_Likes SET Status = -1 WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+        cur.execute(statement)
+        db.commit()
+    else:
+        statement = f"INSERT INTO Thread_Likes (Status, Thread_ID, User_ID) VALUES (?,?,?);"
+        data_tuple = (-1, threadnumber, user_id)
+        cur.execute(statement, data_tuple)
+        db.commit() 
+    return redirect('/')
 
 @route('/static/<filename>')
 def server_static(filename):
