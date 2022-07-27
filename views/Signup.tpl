@@ -14,15 +14,9 @@
 		</a>
 	</div> 
 	<div class="topnav">
-	%if user == "Guest":
 		<a href="/signup" class="active">Registration</a>
 		<a href="/login">Login</a>
-	%elif user != "Guest":
-		<a href="/logout">Sign Out</a>
-		<a href="/useraccount">User Account</a>
-		<a href="/saved">Saved Threads</a>
-	%end
-		<a href="/">Thread Title</a>
+		<a href="/">Thread List</a>
 	</div>
 	<div style="margin-top:80px;">
 		%if Username_Taken:
