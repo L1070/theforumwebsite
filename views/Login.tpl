@@ -44,7 +44,7 @@
 				<input name="password" type="password" id="password" class="form-control" required autofocus>
 				<div>
 					<label>
-						<input type="checkbox" value="remember-me">Remember Me
+						<input type="checkbox" value="remember-me"> Remember Me
 					</label>
 				</div>
 				<div class="mt-3">

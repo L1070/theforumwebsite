@@ -25,19 +25,19 @@
 		<a href="/">Thread List</a>
 	</div>
 	<div style="margin-top:80px;">
-		<div>
+		<div style="margin-left:20px;">
 			<h1>
 				Saved Thread List
 			</h1>
 		</div>
 		<div>
 			%if user == "Guest":
-				<p>Guest</p>
+				<p style="margin-left:30px;">Guest</p>
 			%else:
 				%if user[0][5] == 1:
-					<p>Admin {{user[0][1]}}</p>
+					<p style="margin-left:30px;">Admin {{user[0][1]}}</p>
 				%else:
-					<p>{{user[0][0]}}</p>
+					<p style="margin-left:30px;">{{user[0][0]}}</p>
 				%end
 			%end
 		</div>
@@ -54,9 +54,9 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<button>UP</button>
+								<a href="/{{entry[0]}}/up/saved/page/{{pagenumber}}"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
-								<button>DOWN</button>
+								<a href="/{{entry[0]}}/down/saved/page/{{pagenumber}}"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
@@ -68,15 +68,15 @@
 						%if user != "Guest":
 							%if user[0][5] == 1:
 								<div class="column littleleft">
-									<form action="/pinthread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
+									<form action="/pinthread/saved/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
 								</div>
 								<div class="column littleright">
-									<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
+									<form action="/deletethread/saved/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 								</div>
 							%else:
 								%if user[0][6] == entry[5]:
 									<div class="column littlerightcomment">
-										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
+										<form action="/deletethread/saved/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 								%end
 							%end

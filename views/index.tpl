@@ -24,23 +24,23 @@
 	%end
 		<a href="/" class="active">Thread List</a>
 	%if user != "Guest":
-		<a href="/newthread">New Thread</a>
+		<a href="/newthread/{{pagenumber}}">New Thread</a>
 	%end
 	</div>
 	<div style="margin-top:80px;">
-		<div>
+		<div style="margin-left:20px;">
 			<h1>
 				Thread List
 			</h1>
 		</div>
 		<div>
 			%if user == "Guest":
-				<p>Guest</p>
+				<p style="margin-left:30px;">Guest</p>
 			%else:
 				%if user[0][5] == 1:
-					<p>Admin {{user[0][1]}}</p>
+					<p style="margin-left:30px;">Admin {{user[0][1]}}</p>
 				%else:
-					<p>{{user[0][0]}}</p>
+					<p style="margin-left:30px;">{{user[0][0]}}</p>
 				%end
 			%end
 		</div>
@@ -57,9 +57,9 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<a href="/{{entry[0]}}/up"><button>UP</button></a>
+								<a href="/{{entry[0]}}/up/home/page/{{pagenumber}}"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
-								<a href="/{{entry[0]}}/down"><button>DOWN</button></a>
+								<a href="/{{entry[0]}}/down/home/page/{{pagenumber}}"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
@@ -71,21 +71,21 @@
 						%if user != "Guest":
 							%if user[0][5] == 1:
 								<div class="column littleleft">
-									<form action="/pinthread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
+									<form action="/pinthread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
 								</div>
 								<div class="column littlemiddleadmin">
-									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
+									<form action="/savethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
 								</div>
 									<div class="column littleright">
-										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
+										<form action="/deletethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 							%else:
 								<div class="column littlemiddle">
-									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
+									<form action="/savethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
 								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
-										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
+										<form action="/deletethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 								%end
 							%end
@@ -111,9 +111,9 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<a href="/{{entry[0]}}/up"><button>UP</button></a>
+								<a href="/{{entry[0]}}/up/home/page/{{pagenumber}}"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
-								<a href="/{{entry[0]}}/down"><button>DOWN</button></a>
+								<a href="/{{entry[0]}}/down/home/page/{{pagenumber}}"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
 								<h5>{{entry[4]}}</h5>
@@ -125,21 +125,21 @@
 						%if user != "Guest":
 							%if user[0][5] == 1:
 								<div class="column littleleft">
-									<form action="/pinthread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
+									<form action="/pinthread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">PIN</button></form>
 								</div>
 								<div class="column littlemiddleadmin">
-									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
+									<form action="/savethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
 								</div>
 									<div class="column littleright">
-										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
+										<form action="/deletethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 							%else:
 								<div class="column littlemiddle">
-									<form action="/savethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
+									<form action="/savethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">SAVE</button></form>
 								</div>
 								%if user[0][6] == entry[5]:
 									<div class="column littleright">
-										<form action="/deletethread" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
+										<form action="/deletethread/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DELETE</button></form>
 									</div>
 								%end
 							%end
@@ -159,12 +159,12 @@
 			<div class="row">
 				%if pagenumber != 0:
 					<div class="bottomcolumn bottomleft">
-						<a  href="/{{pagenumber-1}}"><button>PREV</button></a>
+						<a  href="/page/{{pagenumber-1}}"><button>PREV</button></a>
 					</div>
 				%end
 				%if (count-offset_num) > 20:
 					<div class="bottomcolumn bottomright">
-						<a  href="/{{pagenumber+1}}"><button>NEXT</button></a>
+						<a  href="/page/{{pagenumber+1}}"><button>NEXT</button></a>
 					</div>
 				%end
 			</div>

@@ -21,7 +21,7 @@
 	</div>
 	<div style="margin-top:80px;">
 		<div class="text-center mt-5">
-			<form action="/newthread" method="post" style="max-width:800px;margin:auto;">
+			<form action="/newthread/page/{{pagenumber}}" method="post" style="max-width:800px;margin:auto;">
 				<h1 class="h3 mb-3 font-weight-normal" style="color:rgb(132,61,168)">New Thread</h1>
 				<div>
 					<label class="form-label" for="title" style="color:rgb(132,61,168)">Title</label>

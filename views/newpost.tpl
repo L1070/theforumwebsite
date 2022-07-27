@@ -21,7 +21,7 @@
 	</div>
 	<div style="margin-top:80px;">
 		<div class="text-center mt-5">
-			<form action="/newpost/{{threadnumber}}" method="post" style="max-width:800px;margin:auto;">
+			<form action="/newpost/{{threadnumber}}/{{pagenumber}}" method="post" style="max-width:800px;margin:auto;">
 				<h1 class="h3 mb-3 font-weight-normal" style="color:rgb(132,61,168)">New Post</h1>
 				<div>
 					<label class="form-label" for="content" style="color:rgb(132,61,168)">Content</label>

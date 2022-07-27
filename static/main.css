@@ -7,7 +7,7 @@
 
 .threadbox {
 	width:75%;
-	height:180px;
+	height:210px;
 	border:2px solid var(--contrast);
 	background-color: var(--main);
 	margin: auto;

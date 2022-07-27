@@ -23,7 +23,8 @@ def Cookie_Setting():
 
 @route('/')
 @route('/threadlist')
-@route('/0')
+@route('/threadlist/page/0')
+@route('/page/0')
 @view('/')
 def index():
     user = Cookie_Setting()
@@ -43,7 +44,6 @@ def index():
 
 @route('/threadlist/page/<pagenumber>')
 @route('/page/<pagenumber>')
-@route('/<pagenumber>')
 @view('/page/<pagenumber>')
 def index(pagenumber):
     user = Cookie_Setting()
@@ -253,13 +253,13 @@ def savedpage(pagenumber):
     Saved_Threads = cur.fetchall()
     return template("saved.tpl", user=user, Saved_Threads=Saved_Threads, count=count, offset_num=offset_num, pagenumber=pagenumber)
 
-@route('/newthread')
-def newthread():
+@route('/newthread/<pagenumber>')
+def newthread(pagenumber):
     user = Cookie_Setting()
-    return template('newthread.tpl', user=user)
+    return template('newthread.tpl', user=user, pagenumber=pagenumber)
 
-@route('/newthread', method='POST')
-def do_newthread():
+@route('/newthread/page/<pagenumber>', method='POST')
+def do_newthread(pagenumber):
     user=Cookie_Setting()
     title=request.forms.get('title')
     content=request.forms.get('content')
@@ -275,15 +275,17 @@ def do_newthread():
     data_tuple = (threadid, userid, username, content)
     cur.execute(statement, data_tuple)
     db.commit()
-    return redirect('/')
+    pagenumber = str(pagenumber)
+    wheretogo = '/page/' + pagenumber
+    return redirect(wheretogo)
 
-@route('/newpost/<threadnumber>')
-def newpost(threadnumber):
+@route('/newpost/<threadnumber>/<pagenumber>')
+def newpost(threadnumber, pagenumber):
     user = Cookie_Setting()
-    return template('newpost.tpl', user=user, threadnumber=threadnumber)
+    return template('newpost.tpl', user=user, threadnumber=threadnumber, pagenumber=pagenumber)
 
-@route('/newpost/<threadnumber>', method='POST')
-def do_newpost(threadnumber):
+@route('/newpost/<threadnumber>/<pagenumber>', method='POST')
+def do_newpost(threadnumber, pagenumber):
     user=Cookie_Setting()
     content=request.forms.get('content')
     userid = user[0][6]
@@ -294,10 +296,13 @@ def do_newpost(threadnumber):
     data_tuple = (threadid, userid, username, content)
     cur.execute(statement, data_tuple)
     db.commit()
-    return redirect('/')
+    threadid = str(threadid)
+    pagenumber = str(pagenumber)
+    wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+    return redirect(wheretogo)
     
-@route('/savethread', method='POST')
-def button_savethread():
+@route('/savethread/<threadtype>/page/<pagenumber>', method='POST')
+def button_savethread(threadtype, pagenumber):
     userid=Cookie_Setting()
     userid=userid[0][6]
     threadid=request.forms.get('threadid')
@@ -311,10 +316,15 @@ def button_savethread():
         data_tuple = (threadid, userid)
         cur.execute(statement, data_tuple)
     db.commit()
-    return
+    pagenumber = str(pagenumber)
+    if threadtype == 'home':
+        wheretogo = '/page/' + pagenumber
+    elif threadtype == 'saved':
+        wheretogo = '/saved/' + pagenumber
+    return redirect(wheretogo)
     
-@route('/deletethread', method='POST')
-def button_deletethread():
+@route('/deletethread/<threadtype>/page/<pagenumber>', method='POST')
+def button_deletethread(threadtype, pagenumber):
     userid=Cookie_Setting()
     userid=userid[0][6]
     threadid=request.forms.get('threadid')
@@ -325,20 +335,28 @@ def button_deletethread():
     statement = f"DELETE FROM Saved WHERE Thread_ID = {threadid};"
     cur.execute(statement)
     db.commit()
-    return
+    pagenumber = str(pagenumber)
+    if threadtype == 'home':
+        wheretogo = '/page/' + pagenumber
+    elif threadtype == 'saved':
+        wheretogo = '/saved/' + pagenumber
+    return redirect(wheretogo)
     
-@route('/deletecomment', method='POST')
-def button_deletecomment():
+@route('/deletecomment/<threadid>/page/<pagenumber>', method='POST')
+def button_deletecomment(threadid, pagenumber):
     userid=Cookie_Setting()
     userid=userid[0][6]
     commentid=request.forms.get('commentid')
     statement = f"DELETE FROM Comment WHERE Comment_ID = {commentid};"
     cur.execute(statement)
     db.commit()
-    return
+    pagenumber = str(pagenumber)
+    threadid = str(threadid)
+    wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+    return redirect(wheretogo)
     
-@route('/pinthread', method='POST')
-def button_pinthread():
+@route('/pinthread/<threadtype>/page/<pagenumber>', method='POST')
+def button_pinthread(threadtype, pagenumber):
     userid=Cookie_Setting()
     userid=userid[0][6]
     threadid=request.forms.get('threadid')
@@ -352,9 +370,15 @@ def button_pinthread():
         statement = f"UPDATE Thread SET isPinned = 0 WHERE Thread_ID = {threadid};"
     cur.execute(statement)
     db.commit()
+    pagenumber = str(pagenumber)
+    if threadtype == 'home':
+        wheretogo = '/page/' + pagenumber
+    elif threadtype == 'saved':
+        wheretogo = '/saved/' + pagenumber
+    return redirect(wheretogo)
     
-@route('/pincomment', method='POST')
-def button_pincomment():
+@route('/pincomment/<threadid>/page/<pagenumber>', method='POST')
+def button_pincomment(threadid, pagenumber):
     userid=Cookie_Setting()
     userid=userid[0][6]
     commentid=request.forms.get('commentid')
@@ -368,10 +392,14 @@ def button_pincomment():
         statement = f"UPDATE Comment SET isPinned = 0 WHERE Comment_ID = {commentid};"
     cur.execute(statement)
     db.commit()
+    pagenumber = str(pagenumber)
+    threadid = str(threadid)
+    wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+    return redirect(wheretogo)
 
-@route('/<threadnumber>/up', method='POST')
-@route('/<threadnumber>/up', method='GET')
-def up_button(threadnumber):
+@route('/<threadnumber>/up/<threadtype>/page/<pagenumber>', method='POST')
+@route('/<threadnumber>/up/<threadtype>/page/<pagenumber>', method='GET')
+def up_button(threadnumber, threadtype, pagenumber):
     user = Cookie_Setting()
     user_id = user[0][6]
     statement = f"SELECT Score FROM Thread WHERE Thread_ID = {threadnumber};"
@@ -392,24 +420,34 @@ def up_button(threadnumber):
             statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
             cur.execute(statement)
             db.commit()
-            return redirect('/')
+            pagenumber = str(pagenumber)
+            if threadtype == 'home':
+                wheretogo = '/page/' + pagenumber
+            elif threadtype == 'saved':
+                wheretogo = '/saved/' + pagenumber
+            return redirect(wheretogo)
         elif status[0] == -1:
-            score = score - 2
-            statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+            score = score + 2
+            statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
             cur.execute(statement)
             db.commit()
             status = status[0]
-            status = -1
+            status = 1
             statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
             cur.execute(statement)
             db.commit()
-            return redirect('/')
+            pagenumber = str(pagenumber)
+            if threadtype == 'home':
+                wheretogo = '/page/' + pagenumber
+            elif threadtype == 'saved':
+                wheretogo = '/saved/' + pagenumber
+            return redirect(wheretogo)
     score = score + 1
     statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
     cur.execute(statement)
     db.commit()
-    if status[0] == 0:
-        statement = f"UPDATE Thread SET Score = 1 WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
+    if status is not None and status[0] == 0:
+        statement = f"UPDATE Thread_Likes SET Status = 1 WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
         cur.execute(statement)
         db.commit()
     else:
@@ -417,11 +455,16 @@ def up_button(threadnumber):
         data_tuple = (1, threadnumber, user_id)
         cur.execute(statement, data_tuple)
         db.commit()
-    return redirect('/')
+    pagenumber = str(pagenumber)
+    if threadtype == 'home':
+        wheretogo = '/page/' + pagenumber
+    elif threadtype == 'saved':
+        wheretogo = '/saved/' + pagenumber
+    return redirect(wheretogo)
 
-@route('/<threadnumber>/down', method='POST')
-@route('/<threadnumber>/down', method='GET')
-def down_button(threadnumber):
+@route('/<threadnumber>/down/<threadtype>/page/<pagenumber>', method='POST')
+@route('/<threadnumber>/down/<threadtype>/page/<pagenumber>', method='GET')
+def down_button(threadnumber, threadtype, pagenumber):
     user = Cookie_Setting()
     user_id = user[0][6]
     statement = f"SELECT Score FROM Thread WHERE Thread_ID = {threadnumber};"
@@ -442,23 +485,33 @@ def down_button(threadnumber):
             statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
             cur.execute(statement)
             db.commit()
-            return redirect('/')
+            pagenumber = str(pagenumber)
+            if threadtype == 'home':
+                wheretogo = '/page/' + pagenumber
+            elif threadtype == 'saved':
+                wheretogo = '/saved/' + pagenumber
+            return redirect(wheretogo)
         elif status[0] == 1:
-            score = score + 2
+            score = score - 2
             statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
             cur.execute(statement)
             db.commit()
             status = status[0]
-            status = 1
+            status = -1
             statement = f"UPDATE Thread_Likes SET Status = {status} WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
             cur.execute(statement)
             db.commit()
-            return redirect('/')
+            pagenumber = str(pagenumber)
+            if threadtype == 'home':
+                wheretogo = '/page/' + pagenumber
+            elif threadtype == 'saved':
+                wheretogo = '/saved/' + pagenumber
+            return redirect(wheretogo)
     score = score - 1
     statement = f"UPDATE Thread SET Score = {score} WHERE Thread_ID = {threadnumber};"
     cur.execute(statement)
     db.commit()
-    if status[0] == 0:
+    if status is not None and status[0] == 0:
         statement = f"UPDATE Thread_Likes SET Status = -1 WHERE Thread_ID = {threadnumber} AND User_ID = {user_id};"
         cur.execute(statement)
         db.commit()
@@ -467,7 +520,130 @@ def down_button(threadnumber):
         data_tuple = (-1, threadnumber, user_id)
         cur.execute(statement, data_tuple)
         db.commit() 
-    return redirect('/')
+    pagenumber = str(pagenumber)
+    if threadtype == 'home':
+        wheretogo = '/page/' + pagenumber
+    elif threadtype == 'saved':
+        wheretogo = '/saved/' + pagenumber
+    return redirect(wheretogo)
+
+@route('/<commentnumber>/commentup/<threadid>/page/<pagenumber>', method='POST')
+@route('/<commentnumber>/commentup/<threadid>/page/<pagenumber>', method='GET')
+def up_button(commentnumber, threadid, pagenumber):
+    user = Cookie_Setting()
+    user_id = user[0][6]
+    statement = f"SELECT Score FROM Comment WHERE Comment_ID = {commentnumber};"
+    cur.execute(statement)
+    score = cur.fetchone()
+    score = score[0]
+    statement = f"SELECT Status FROM Comment_Likes WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+    cur.execute(statement)
+    status = cur.fetchone()
+    if status is not None and status[0] != 0:
+        if status[0] == 1:
+            score = score - 1
+            statement = f"UPDATE Comment SET Score = {score} WHERE Comment_ID = {commentnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = 0
+            statement = f"UPDATE Comment_Likes SET Status = {status} WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            pagenumber = str(pagenumber)
+            threadid = str(threadid)
+            wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+            return redirect(wheretogo)
+        elif status[0] == -1:
+            score = score + 2
+            statement = f"UPDATE Comment SET Score = {score} WHERE Comment_ID = {commentnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = 1
+            statement = f"UPDATE Comment_Likes SET Status = {status} WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            pagenumber = str(pagenumber)
+            threadid = str(threadid)
+            wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+            return redirect(wheretogo)
+    score = score + 1
+    statement = f"UPDATE Comment SET Score = {score} WHERE Comment_ID = {commentnumber};"
+    cur.execute(statement)
+    db.commit()
+    if status is not None and status[0] == 0:
+        statement = f"UPDATE Comment_Likes SET Status = 1 WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+        cur.execute(statement)
+        db.commit()
+    else:
+        statement = f"INSERT INTO Comment_Likes (Status, Comment_ID, User_ID) VALUES (?,?,?);"
+        data_tuple = (1, commentnumber, user_id)
+        cur.execute(statement, data_tuple)
+        db.commit()
+    pagenumber = str(pagenumber)
+    threadid = str(threadid)
+    wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+    return redirect(wheretogo)
+
+@route('/<commentnumber>/commentdown/<threadid>/page/<pagenumber>', method='POST')
+@route('/<commentnumber>/commentdown/<threadid>/page/<pagenumber>', method='GET')
+def down_button(commentnumber, threadid, pagenumber):
+    user = Cookie_Setting()
+    user_id = user[0][6]
+    statement = f"SELECT Score FROM Comment WHERE Comment_ID = {commentnumber};"
+    cur.execute(statement)
+    score = cur.fetchone()
+    score = score[0]
+    statement = f"SELECT Status FROM Comment_Likes WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+    cur.execute(statement)
+    status = cur.fetchone()
+    if status is not None and status[0] != 0:
+        if status[0] == -1:
+            score = score + 1
+            statement = f"UPDATE Comment SET Score = {score} WHERE Comment_ID = {commentnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = 0
+            statement = f"UPDATE Comment_Likes SET Status = {status} WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            pagenumber = str(pagenumber)
+            threadid = str(threadid)
+            wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+            return redirect(wheretogo)
+        elif status[0] == 1:
+            score = score - 2
+            statement = f"UPDATE Comment SET Score = {score} WHERE Comment_ID = {commentnumber};"
+            cur.execute(statement)
+            db.commit()
+            status = status[0]
+            status = -1
+            statement = f"UPDATE Comment_Likes SET Status = {status} WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+            cur.execute(statement)
+            db.commit()
+            pagenumber = str(pagenumber)
+            threadid = str(threadid)
+            wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+            return redirect(wheretogo)
+    score = score - 1
+    statement = f"UPDATE Comment SET Score = {score} WHERE Comment_ID = {commentnumber};"
+    cur.execute(statement)
+    db.commit()
+    if status is not None and status[0] == 0:
+        statement = f"UPDATE Comment_Likes SET Status = -1 WHERE Comment_ID = {commentnumber} AND User_ID = {user_id};"
+        cur.execute(statement)
+        db.commit()
+    else:
+        statement = f"INSERT INTO Comment_Likes (Status, Comment_ID, User_ID) VALUES (?,?,?);"
+        data_tuple = (-1, commentnumber, user_id)
+        cur.execute(statement, data_tuple)
+        db.commit() 
+    pagenumber = str(pagenumber)
+    threadid = str(threadid)
+    wheretogo = '/threadpage/' + threadid + '/' + pagenumber
+    return redirect(wheretogo)
 
 @route('/static/<filename>')
 def server_static(filename):
