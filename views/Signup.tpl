@@ -16,7 +16,7 @@
 	<div class="topnav">
 		<a href="/signup" class="active">Registration</a>
 		<a href="/login">Login</a>
-		<a href="/">Thread Page</a>
+		<a href="/">Thread List</a>
 	</div>
 	<div style="margin-top:80px;">
 		%if Username_Taken:
