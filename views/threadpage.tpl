@@ -57,13 +57,13 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<a href="/{{entry[0]}}/commentup/{{threadnumber}}/page/{{pagenumber}}"><button>UP</button></a>
+								<form action="/{{entry[0]}}/commentup/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">UP</button></form>
 								<h4>{{entry[4]}}</h4>
-								<a href="/{{entry[0]}}/commentdown/{{threadnumber}}/page/{{pagenumber}}"><button>DOWN</button></a>
+								<form action="/{{entry[0]}}/commentdown/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DOWN</button></form>
 							%else:
-								<a  href="/login"><button>UP</button></a>
-								<h4>{{entry[4]}}</h4>
-								<a  href="/login"><button>DOWN</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">UP</button></form>
+								<h3>{{entry[4]}}</h3>
+								<form action="/login"><button type="submit" value="To Login Page">DOWN</button></form>
 							%end
 						</div>
 					</div>
@@ -97,13 +97,13 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<a href="/{{entry[0]}}/commentup/{{threadnumber}}/page/{{pagenumber}}"><button>UP</button></a>
+								<form action="/{{entry[0]}}/commentup/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">UP</button></form>
 								<h4>{{entry[4]}}</h4>
-								<a href="/{{entry[0]}}/commentdown/{{threadnumber}}/page/{{pagenumber}}"><button>DOWN</button></a>
+								<form action="/{{entry[0]}}/commentdown/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DOWN</button></form>
 							%else:
-								<a  href="/login"><button>UP</button></a>
-								<h4>{{entry[4]}}</h4>
-								<a  href="/login"><button>DOWN</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">UP</button></form>
+								<h3>{{entry[4]}}</h3>
+								<form action="/login"><button type="submit" value="To Login Page">DOWN</button></form>
 							%end
 						</div>
 					</div>

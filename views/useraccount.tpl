@@ -47,23 +47,23 @@
 				</div>
 				<div>
 					<label class="form-label" for="first-name" style="color:rgb(132,61,168)">First Name</label>
-					<input name="first-name" type="text" id="first-name" class="form-control" required autofocus value="{{user[0][1]}}">
+					<input name="first-name" type="text" id="first-name" class="form-control" required value="{{user[0][1]}}">
 				</div>
 				<div>
 					<label class="form-label" for="last-name" style="color:rgb(132,61,168)">Last Name</label>
-					<input name="last-name" type="text" id="last-name" class="form-control" required autofocus value="{{user[0][2]}}">
+					<input name="last-name" type="text" id="last-name" class="form-control" required value="{{user[0][2]}}">
 				</div>
 				<div>
 					<label class="form-label" for="email-address" style="color:rgb(132,61,168)">Email Address</label>
-					<input name="email-address" type="email" id="email-address" class="form-control" required autofocus value="{{user[0][3]}}">
+					<input name="email-address" type="email" id="email-address" class="form-control" required value="{{user[0][3]}}">
 				</div>
 				<div>
 					<label class="form-label" for="password" style="color:rgb(132,61,168)">Password</label>
-					<input name="password" type="password" id="password" class="form-control" required autofocus value="{{stored_info[0]}}">
+					<input name="password" type="password" id="password" class="form-control" required value="{{stored_info[0]}}">
 				</div>
 				<div>
 					<label class="form-label" for="confirm-password" style="color:rgb(132,61,168)">Confirm Password</label>
-					<input name="confirm-password" type="password" id="confirm-password" class="form-control" required autofocus value="{{stored_info[0]}}">
+					<input name="confirm-password" type="password" id="confirm-password" class="form-control" required value="{{stored_info[0]}}">
 				</div>
 				<div class="mt-3">
 					<button class="btn btn-primary btn-success" style="color:var(--contrast)">Change Info</button>

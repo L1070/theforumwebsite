@@ -57,13 +57,13 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<a href="/{{entry[0]}}/up/home/page/{{pagenumber}}"><button>UP</button></a>
+								<form action="/{{entry[0]}}/up/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">UP</button></form>
 								<h3>{{entry[4]}}</h3>
-								<a href="/{{entry[0]}}/down/home/page/{{pagenumber}}"><button>DOWN</button></a>
+								<form action="/{{entry[0]}}/down/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DOWN</button></form>
 							%else:
-								<a  href="/login"><button>UP</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">UP</button></form>
 								<h3>{{entry[4]}}</h3>
-								<a  href="/login"><button>DOWN</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">DOWN</button></form>
 							%end
 						</div>
 					</div>
@@ -91,7 +91,7 @@
 							%end
 						%else:
 							<div class="column littlemiddle">
-								<a  href="/login"><button>SAVE</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">SAVE</button></form>
 							</div>
 						%end
 					</div>
@@ -111,13 +111,13 @@
 						</div>
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
-								<a href="/{{entry[0]}}/up/home/page/{{pagenumber}}"><button>UP</button></a>
+								<form action="/{{entry[0]}}/up/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">UP</button></form>
 								<h3>{{entry[4]}}</h3>
-								<a href="/{{entry[0]}}/down/home/page/{{pagenumber}}"><button>DOWN</button></a>
+								<form action="/{{entry[0]}}/down/home/page/{{pagenumber}}" method="post"><button type="submit" name="threadid" value="{{entry[0]}}">DOWN</button></form>
 							%else:
-								<a  href="/login"><button>UP</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">UP</button></form>
 								<h3>{{entry[4]}}</h3>
-								<a  href="/login"><button>DOWN</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">DOWN</button></form>
 							%end
 						</div>
 					</div>
@@ -145,7 +145,7 @@
 							%end
 						%else:
 							<div class="column littlemiddle">
-								<a  href="/login"><button>SAVE</button></a>
+								<form action="/login"><button type="submit" value="To Login Page">SAVE</button></form>
 							</div>
 						%end
 					</div>
