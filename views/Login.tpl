@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 <body>
 	<div id="logo"> 
 		<a href="/">
-			<img src="/static/logo.png" width="30%">
+			<img src="/static/logo.png" width="30%" alt="Forum Logo Link to Homepage">
 		</a>
 	</div> 
 	<div class="topnav">

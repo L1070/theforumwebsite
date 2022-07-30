@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 <body>
 	<div id="logo">
 		<a href="/">
-			<img src="/static/logo.png" width="30%">
+			<img src="/static/logo.png" width="30%" alt="Forum Logo Link to Homepage">
 		</a>
 	</div>
 	<div class="topnav">
@@ -58,11 +58,11 @@
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
 								<a href="/{{entry[0]}}/commentup/{{threadnumber}}/page/{{pagenumber}}"><button>UP</button></a>
-								<h5>{{entry[4]}}</h5>
+								<h4>{{entry[4]}}</h4>
 								<a href="/{{entry[0]}}/commentdown/{{threadnumber}}/page/{{pagenumber}}"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
-								<h5>{{entry[4]}}</h5>
+								<h4>{{entry[4]}}</h4>
 								<a  href="/login"><button>DOWN</button></a>
 							%end
 						</div>
@@ -98,11 +98,11 @@
 						<div class="column right" style="margin-top:2%">
 							%if user != "Guest":
 								<a href="/{{entry[0]}}/commentup/{{threadnumber}}/page/{{pagenumber}}"><button>UP</button></a>
-								<h5>{{entry[4]}}</h5>
+								<h4>{{entry[4]}}</h4>
 								<a href="/{{entry[0]}}/commentdown/{{threadnumber}}/page/{{pagenumber}}"><button>DOWN</button></a>
 							%else:
 								<a  href="/login"><button>UP</button></a>
-								<h5>{{entry[4]}}</h5>
+								<h4>{{entry[4]}}</h4>
 								<a  href="/login"><button>DOWN</button></a>
 							%end
 						</div>

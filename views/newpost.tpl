@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>The Forum - Registration</title>
+	<title>The Forum - New Post</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 	<link href="/static/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="logo"> 
 		<a href="/">
-			<img src="/static/logo.png" width="30%">
+			<img src="/static/logo.png" width="30%" alt="Forum Logo Link to Homepage">
 		</a>
 	</div> 
 	<div class="topnav">
