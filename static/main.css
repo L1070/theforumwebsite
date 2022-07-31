@@ -7,8 +7,9 @@
 
 .threadbox {
 	width:75%;
-	height:210px;
-	border:2px solid var(--contrast);
+	height:220px;
+	border:4px solid var(--contrast);
+	border-radius: 25px;
 	background-color: var(--main);
 	margin: auto;
 	margin-bottom: 1%;
@@ -34,7 +35,7 @@
 .topnav a {
   float: right;
   text-align: center;
-  padding: 22px 16px;
+  padding: 26px 16px;
   text-decoration: none;
   font-size: 17px;
 }

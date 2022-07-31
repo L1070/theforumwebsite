@@ -10,7 +10,7 @@
 <body>
 	<div id="logo"> 
 		<a href="/">
-			<img src="/static/logo.png" width="30%" alt="Forum Logo Link to Homepage">
+			<img src="/static/logo.png" width="35%" alt="Forum Logo Link to Homepage">
 		</a>
 	</div> 
 	<div class="topnav">
