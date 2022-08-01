@@ -73,11 +73,15 @@
 							<div class="column littleleft">
 								<form action="/pincomment/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">PIN</button></form>
 							</div>
-						%end
-						%if user[0][0] == entry[2]:
 							<div class="column littlerightcomment">
 								<form action="/deletecomment/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">DELETE</button></form>
 							</div>
+						%else:
+							%if user[0][0] == entry[2]:
+								<div class="column littlerightcomment">
+									<form action="/deletecomment/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">DELETE</button></form>
+								</div>
+							%end
 						%end
 					%end
 					</div>
@@ -113,11 +117,15 @@
 							<div class="column littleleft">
 								<form action="/pincomment/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">PIN</button></form>
 							</div>
-						%end
-						%if user[0][0] == entry[2]:
 							<div class="column littlerightcomment">
 								<form action="/deletecomment/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">DELETE</button></form>
 							</div>
+						%else:
+							%if user[0][0] == entry[2]:
+								<div class="column littlerightcomment">
+									<form action="/deletecomment/{{threadnumber}}/page/{{pagenumber}}" method="post"><button type="submit" name="commentid" value="{{entry[0]}}">DELETE</button></form>
+								</div>
+							%end
 						%end
 					%end
 					</div>
