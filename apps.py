@@ -9,7 +9,7 @@ sessions = {}
 db = sqlite3.connect('forumdata.db')
 cur = db.cursor()
 
-abs_app_dir_path = os.path.dirname(os.path.realpath(__file__))
+abs_app_dir_path = os.path.dirname(os.path.realpath(os.getcwd()))
 abs_views_path = os.path.join(abs_app_dir_path, 'views')
 
 
