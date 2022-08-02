@@ -266,8 +266,11 @@ def do_newthread(pagenumber):
     userid = user[0][6]
     username = user[0][0]
     content = re.sub(r'([0-9]{5})', r'</p><a href="/threadpage/\1" style="display:inline; color:var(--highlight);">\1</a><p style="display:inline;">', content)
-    statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES(?, ?, ?, datetime('now')) RETURNING Thread_ID;"
+    statement = f"INSERT INTO Thread (Title_Name, User_ID, Username, Date_Made) VALUES(?, ?, ?, datetime('now'));"
     data_tuple = (title, userid, username)
+    cur.execute(statement, data_tuple)
+    statement = f"SELECT Thread_ID FROM Thread WHERE Title_Name = ? AND ? ORDER BY Thread_ID DESC LIMIT 1;"
+    data_tuple = (title, userid)
     cur.execute(statement, data_tuple)
     threadid = cur.fetchall()
     threadid = threadid[0][0]
